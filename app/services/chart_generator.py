@@ -88,11 +88,11 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
     )
 
     # Set the title
-    line_chart.title = f"{profile_name}'s Repo Traffic"
+    line_chart.title = f"{profile_name}'s Repo Traffic Stats"
     # Set the x-axis title
     line_chart.x_title = "Days"
     # Set the y-axis title
-    line_chart.y_title = "Traffic Count"
+    line_chart.y_title = "Count"
     line_chart.x_labels = dates
     line_chart.add('Clones', clones)
     line_chart.add('Views', views)
