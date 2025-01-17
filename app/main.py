@@ -32,6 +32,8 @@ def get_traffic_chart(
         - username: GitHub username whose traffic data is to be fetched.
         - theme: The theme to be applied to the chart.
         - bg_color: Optional background color for the chart.
+        - clones_color: Optional clones stroke color for the chart.
+        - views_color: Optional views stroke color for the chart.
         - height: Height of the chart.
         - width: Width of the chart.
         - exclude_repos: Comma-separated list of repository names to exclude from the chart.

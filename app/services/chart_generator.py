@@ -40,6 +40,8 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
         - traffic_data: A dictionary containing the traffic data (views and clones) for each date.
         - theme_name: The theme name to be applied to the chart.
         - bg_color: (Optional) A custom background color for the chart.
+        - clones_color: (Optional) A custom clones stroke color for the chart.
+        - views_color: (Optional) A custom views stroke color for the chart.
 
     Returns:
         A StreamingResponse containing the chart in SVG format.
