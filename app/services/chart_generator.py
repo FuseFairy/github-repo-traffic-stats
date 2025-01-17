@@ -32,7 +32,7 @@ def load_theme(theme_name: str) -> Dict:
 
 # Generate a chart based on the provided traffic data and theme.
 # Returns the chart as an SVG file response.
-def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_color: str=None):
+def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, height: int, width: int, bg_color: str=None):
     """
     Generates a line chart showing GitHub repository traffic data (views and clones),
     and returns the chart as an SVG file.
@@ -78,7 +78,7 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_co
     )
 
     # Create the line chart
-    line_chart = pygal.Line(style=custom_style, x_label_rotation=45)
+    line_chart = pygal.Line(style=custom_style, x_label_rotation=45, height=height, width=width)
     # Set the title
     line_chart.title = f"{profile_name}'s Repo Traffic"
     # Set the x-axis title

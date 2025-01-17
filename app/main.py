@@ -16,7 +16,9 @@ def root():
 def get_traffic_chart(
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
-    bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')")
+    bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
+    height: int = Query(400, ge=400, description="Chart height in pixels"),
+    width: int = Query(800, ge=800, description="Chart width in pixels")
 ):
     """
     Endpoint to get the traffic chart for a GitHub user's repository.
@@ -39,7 +41,7 @@ def get_traffic_chart(
             cache[username] = traffic_data  # Store traffic data in cache
 
         profile_name = get_profile_name()  # Get the profile name
-        chart_svg = generate_chart(profile_name, traffic_data, theme, bg_color)  # Generate the chart in SVG format
+        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)  # Generate the chart in SVG format
 
         return chart_svg
 
