@@ -71,8 +71,8 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
         opacity_hover=0.9,
         stroke_width=3,
         colors=(
-            theme["line_colors"]["clones"] if clones_color is None else clones_color,
-            theme["line_colors"]["views"] if views_color is None else views_color
+            theme["line_colors"]["clones"] if clones_color is None else f'#{clones_color}',
+            theme["line_colors"]["views"] if views_color is None else f'#{views_color}'
         )
     )
 
