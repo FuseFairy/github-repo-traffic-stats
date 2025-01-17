@@ -11,20 +11,26 @@ HEADERS = {
 }
 
 # Fetch all traffic data for a user's repositories
-def get_all_traffic_data(username: str):
+def get_all_traffic_data(username: str, exclude_repos: list=None):
     """
     Retrieves traffic data (clones and views) for all repositories of a GitHub user.
 
     Args:
-        username: The GitHub username whose repository traffic data is to be fetched.
+        - username: The GitHub username whose repository traffic data is to be fetched.
+        - exclude_repos: Comma-separated list of repository names to exclude from the chart.
 
     Returns:
-        A dictionary containing traffic data for each day, including the number of clones and views.
+       A dictionary containing traffic data for each day, including the number of clones and views.
 
     Raises:
         HTTPException: If any error occurs while fetching the data.
     """
     repos = get_user_repos(username)  # Get the list of repositories for the user
+
+    # Filter out the repositories that are in exclude_repos
+    if exclude_repos:
+        repos = [repo for repo in repos if repo not in exclude_repos]
+
     traffic_data = {}
 
     for repo_name in repos:
@@ -77,8 +83,8 @@ def get_repo_traffic(repo_owner, repo_name):
     Retrieves traffic data (clones and views) for a specific repository.
 
     Args:
-        repo_owner: The owner of the repository.
-        repo_name: The name of the repository.
+        - repo_owner: The owner of the repository.
+        - repo_name: The name of the repository.
 
     Returns:
         A dictionary containing clones and views data for the repository.

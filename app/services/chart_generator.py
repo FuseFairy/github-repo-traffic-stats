@@ -11,7 +11,7 @@ def load_theme(theme_name: str) -> Dict:
     Loads the theme from a JSON file located in the 'themes' directory.
 
     Args:
-        theme_name: The name of the theme to load.
+        - theme_name: The name of the theme to load.
 
     Returns:
         A dictionary containing the theme's settings.
@@ -36,10 +36,10 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
     and returns the chart as an SVG file.
 
     Args:
-        profile_name: The profile name to be displayed in the chart title.
-        traffic_data: A dictionary containing the traffic data (views and clones) for each date.
-        theme_name: The theme name to be applied to the chart.
-        bg_color: (Optional) A custom background color for the chart.
+        - profile_name: The profile name to be displayed in the chart title.
+        - traffic_data: A dictionary containing the traffic data (views and clones) for each date.
+        - theme_name: The theme name to be applied to the chart.
+        - bg_color: (Optional) A custom background color for the chart.
 
     Returns:
         A StreamingResponse containing the chart in SVG format.
