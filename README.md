@@ -55,6 +55,8 @@ Here’s an example of a traffic chart generated from a public GitHub repository
 <details> 
   <summary><strong>Click to expand local development instructions</strong></summary>
 
+  **Python 3.12+** is required to run this project.
+
   ### 1. Clone the Repository
   ```
   git clone https://github.com/FuseFairy/github-repo-traffic-stats.git
