@@ -58,7 +58,7 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_co
     # Extract the number of views
     views = [traffic_data[date]["views"] for date in sorted_dates]
     # Get the background color, use the theme background color if not provided
-    background_color = bg_color if bg_color else theme["background_color"]
+    background_color = f"#{bg_color}" if bg_color else theme["background_color"]
 
     # Custom style
     custom_style = Style(

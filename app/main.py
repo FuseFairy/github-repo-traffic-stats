@@ -16,7 +16,7 @@ def root():
 def get_traffic_chart(
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
-    bg_color: str = Query(None, description="Background color (e.g., 'rgba(0, 0, 0, 0)')")
+    bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')")
 ):
     """
     Endpoint to get the traffic chart for a GitHub user's repository.
