@@ -3,12 +3,12 @@ from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
-import hashlib
 
 app = FastAPI()
 
-# Create a TTL (time-to-live) cache with a max size of 1 and expiration time of 86400 seconds (24 hours)
+# Create a TTL (time-to-live) cache with a max size of 10 and expiration time of 86400 seconds (24 hours)
 cache = TTLCache(maxsize=10, ttl=86400)
+
 @app.get("/")
 def root():
     return RedirectResponse(url="https://github.com/FuseFairy/github-repo-traffic")
@@ -38,41 +38,39 @@ def get_traffic_chart(
         A response containing the chart in SVG format.
     """
     try:
-        # Generate a unique cache key based on the request parameters
-        cache_key = generate_cache_key(username, theme, height, width, bg_color, exclude_repos)
+        # Check if traffic data is already cached for this username
+        traffic_data_key = f"traffic_data_{username}"
+        profile_name_key = f"profile_name_{username}"
 
-        # Check if the traffic data is cached for this unique combination
-        if cache_key in cache:
-            return cache[cache_key]  # Return cached response directly
+        if traffic_data_key in cache and profile_name_key in cache:
+            traffic_data = cache[traffic_data_key]
+            profile_name = cache[profile_name_key]
         else:
             # Convert the comma-separated exclude_repos string into a list
             if exclude_repos:
                 exclude_repos = exclude_repos.split(",")
 
-            # Generate chart
+            # Generate new traffic data and profile name
             traffic_data = get_all_traffic_data(username, exclude_repos)
             profile_name = get_profile_name()
-            chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
 
-            headers = {
-                "Cache-Control": "public, max-age=3600",
-                "Content-Disposition": "inline; filename=chart.svg"
-            }
-            
-            # Create Response object and cache it
-            response = Response(content=chart_svg, media_type="image/svg+xml", headers=headers)
-            cache[cache_key] = response
-            return response
+            # Cache traffic data and profile name for 24 hours
+            cache[traffic_data_key] = traffic_data
+            cache[profile_name_key] = profile_name
+
+        # Generate chart
+        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
+
+        # Set appropriate Cache-Control headers for response caching
+        headers = {
+            "Cache-Control": "public, max-age=86400",  # Cache for 24 hours
+            "Content-Disposition": "inline; filename=chart.svg"
+        }
+        
+        # Create Response object and return it
+        return Response(content=chart_svg, media_type="image/svg+xml", headers=headers)
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))  # Raise 404 if theme file is not found
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")  # Raise 500 for other errors
-
-def generate_cache_key(username, theme, height, width, bg_color, exclude_repos):
-    """
-    Generate a unique cache key based on the request parameters.
-    """
-    # Concatenate the parameters to form a string, and then hash it to generate a unique key
-    key_string = f"{username}-{theme}-{height}-{width}-{bg_color}-{exclude_repos}"
-    return hashlib.md5(key_string.encode()).hexdigest()  # Use MD5 to generate a short, unique key
