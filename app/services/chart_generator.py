@@ -1,10 +1,8 @@
-import io
 import os
 import json
 import pygal
 from typing import Dict
 from pygal.style import Style
-from fastapi.responses import StreamingResponse
 
 # Load the theme from a JSON file.
 # If the theme file does not exist, raises a FileNotFoundError.
@@ -102,10 +100,4 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
     # Render the SVG content
     svg_content = line_chart.render()
 
-    # Create a BytesIO stream to hold the SVG data
-    svg_buffer = io.BytesIO()
-    svg_buffer.write(svg_content)
-    svg_buffer.seek(0)   # Go to the beginning of the stream
-
-    # Return the SVG file as a StreamingResponse
-    return StreamingResponse(svg_buffer, media_type='image/svg+xml', headers={"Content-Disposition": "inline; filename=chart.svg"})
+    return svg_content
