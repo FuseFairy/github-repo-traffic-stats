@@ -1,2 +1,4 @@
 requirements.txt
 .gitignore
+*.md
+LICENSE
