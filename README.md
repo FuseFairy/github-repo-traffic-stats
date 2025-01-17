@@ -114,6 +114,8 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 | `username`      | `string` | Your GitHub username.                                                                                      | None           | ✅      |
 | `theme`         | `string` | The theme for the chart. Available options: `default`, `tokyo-night`, etc.                                 | `default`      | ❌      |
 | `bg_color`      | `string` | Background color of the chart in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
+| `clones_color`      | `string` | Color of the clones stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
+| `views_color`      | `string` | Color of the views stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `height`        | `integer`| Height of the chart in pixels **(minimum: 400)**.                                                          | `400`          | ❌      |
 | `width`         | `integer`| Width of the chart in pixels **(minimum: 800)**.                                                           | `800`          | ❌      |
 | `exclude_repos` | `string` | A comma-separated list of repository names to exclude from the traffic data.                               | None           | ❌      |
@@ -128,6 +130,10 @@ Here are some example API calls to demonstrate usage:
 - Custom Chart Theme and Background
   ```
   /api?username=fusefairy&theme=tokyo-night&bg_color=00000000
+  ```
+- Modify the Stroke Color Directly
+  ```
+  /api?username=fusefairy&clones_color=8ab0c6&views_color=c6c6c6
   ```
 - Exclude Specific Repositories
   ```

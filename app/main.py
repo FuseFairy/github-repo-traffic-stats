@@ -18,6 +18,8 @@ def get_traffic_chart(
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
+    clones_color: str = Query(None, description="Color for clones line (e.g., 'FF5733' for orange-red without '#')"),
+    views_color: str = Query(None, description="Color for views line (e.g., '33FF57' for green without '#')"),
     height: int = Query(400, ge=400, description="Chart height in pixels"),
     width: int = Query(800, ge=800, description="Chart width in pixels"),
     exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart")
@@ -30,6 +32,8 @@ def get_traffic_chart(
         - username: GitHub username whose traffic data is to be fetched.
         - theme: The theme to be applied to the chart.
         - bg_color: Optional background color for the chart.
+        - clones_color: Optional clones stroke color for the chart.
+        - views_color: Optional views stroke color for the chart.
         - height: Height of the chart.
         - width: Width of the chart.
         - exclude_repos: Comma-separated list of repository names to exclude from the chart.
@@ -59,7 +63,7 @@ def get_traffic_chart(
             cache[profile_name_key] = profile_name
 
         # Generate chart
-        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
+        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color, clones_color, views_color)
 
         # Set appropriate Cache-Control headers for response caching
         headers = {
