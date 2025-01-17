@@ -30,7 +30,7 @@ def load_theme(theme_name: str) -> Dict:
 
 # Generate a chart based on the provided traffic data and theme.
 # Returns the chart as an SVG file response.
-def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, height: int, width: int, bg_color: str=None):
+def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, height: int, width: int, bg_color: str=None, clones_color: str=None, views_color: str=None):
     """
     Generates a line chart showing GitHub repository traffic data (views and clones),
     and returns the chart as an SVG file.
@@ -71,8 +71,8 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
         opacity_hover=0.9,
         stroke_width=3,
         colors=(
-            theme["line_colors"]["clones"],
-            theme["line_colors"]["views"]
+            theme["line_colors"]["clones"] if clones_color is None else clones_color,
+            theme["line_colors"]["views"] if views_color is None else views_color
         )
     )
 
