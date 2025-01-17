@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Query, Response, HTTPException
+from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
@@ -7,11 +8,10 @@ import hashlib
 app = FastAPI()
 
 # Create a TTL (time-to-live) cache with a max size of 1 and expiration time of 86400 seconds (24 hours)
-cache = TTLCache(maxsize=10, ttl=86400)  # Cache for 24 hours, increase maxsize to allow more cached items
-
+cache = TTLCache(maxsize=10, ttl=86400)
 @app.get("/")
 def root():
-    return {"message": "Welcome to GitHub Traffic Stats API"}
+    return RedirectResponse(url="https://github.com/FuseFairy/github-repo-traffic")
 
 @app.get("/api")
 def get_traffic_chart(
@@ -19,32 +19,38 @@ def get_traffic_chart(
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
     height: int = Query(400, ge=400, description="Chart height in pixels"),
-    width: int = Query(800, ge=800, description="Chart width in pixels")
+    width: int = Query(800, ge=800, description="Chart width in pixels"),
+    exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart")
 ):
     """
     Endpoint to get the traffic chart for a GitHub user's repository.
     It fetches traffic data from the GitHub API and generates a chart in SVG format.
     
     Args:
-    - username: GitHub username whose traffic data is to be fetched.
-    - theme: The theme to be applied to the chart.
-    - bg_color: Optional background color for the chart.
-    - height: Height of the chart.
-    - width: Width of the chart.
+        - username: GitHub username whose traffic data is to be fetched.
+        - theme: The theme to be applied to the chart.
+        - bg_color: Optional background color for the chart.
+        - height: Height of the chart.
+        - width: Width of the chart.
+        - exclude_repos: Comma-separated list of repository names to exclude from the chart.
 
     Returns:
-    - A response containing the chart in SVG format.
+        A response containing the chart in SVG format.
     """
     try:
         # Generate a unique cache key based on the request parameters
-        cache_key = generate_cache_key(username, theme, height, width, bg_color)
+        cache_key = generate_cache_key(username, theme, height, width, bg_color, exclude_repos)
 
         # Check if the traffic data is cached for this unique combination
         if cache_key in cache:
             return cache[cache_key]  # Return cached response directly
         else:
+            # Convert the comma-separated exclude_repos string into a list
+            if exclude_repos:
+                exclude_repos = exclude_repos.split(",")
+
             # Generate chart
-            traffic_data = get_all_traffic_data(username)
+            traffic_data = get_all_traffic_data(username, exclude_repos)
             profile_name = get_profile_name()
             chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
 
@@ -63,10 +69,10 @@ def get_traffic_chart(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")  # Raise 500 for other errors
 
-def generate_cache_key(username, theme, height, width, bg_color):
+def generate_cache_key(username, theme, height, width, bg_color, exclude_repos):
     """
     Generate a unique cache key based on the request parameters.
     """
     # Concatenate the parameters to form a string, and then hash it to generate a unique key
-    key_string = f"{username}-{theme}-{height}-{width}-{bg_color}"
+    key_string = f"{username}-{theme}-{height}-{width}-{bg_color}-{exclude_repos}"
     return hashlib.md5(key_string.encode()).hexdigest()  # Use MD5 to generate a short, unique key
