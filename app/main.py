@@ -47,9 +47,14 @@ def get_traffic_chart(
             traffic_data = get_all_traffic_data(username)
             profile_name = get_profile_name()
             chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
+
+            headers = {
+                "Cache-Control": "public, max-age=3600",
+                "Content-Disposition": "inline; filename=chart.svg"
+            }
             
             # Create Response object and cache it
-            response = Response(content=chart_svg, media_type="image/svg+xml", headers={"Content-Disposition": "inline; filename=chart.svg"})
+            response = Response(content=chart_svg, media_type="image/svg+xml", headers=headers)
             cache[cache_key] = response
             return response
 
