@@ -2,7 +2,7 @@
 
 This project provides an API for fetching and visualizing traffic data of **your GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
 
-## ✨Features:
+## ✨Features
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
 - 🎨Support for different themes and background colors
@@ -138,7 +138,7 @@ Here are some example API calls to demonstrate usage:
 > [!TIP]
 > Use the interactive documentation at `/docs` to explore the API easily.
 
-## Available Themes 🎨
+## 🎨Available Themes
 
 Here are the currently available themes you can use for your traffic charts. The themes are stored in the `app/themes` directory. Feel free to contribute and add your own themes by submitting a pull request!
 
