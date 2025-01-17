@@ -1,0 +1,9 @@
+{
+    "background_color": "rgba(34, 34, 34, 1)",
+    "line_colors": {
+        "clones": "rgba(95, 158, 160, 1)",
+        "views": "rgba(255, 99, 71, 1)"
+    },
+    "text_color": "rgba(255, 255, 255, 1)",
+    "grid_color": "rgba(90, 90, 90, 1)"
+}
