@@ -41,20 +41,17 @@ def get_traffic_chart(
 
         # Check if the traffic data is cached for this unique combination
         if cache_key in cache:
-            chart_svg = cache[cache_key]  # Retrieve the cached chart
+            return cache[cache_key]  # Return cached response directly
         else:
-            # Fetch new traffic data
+            # Generate chart
             traffic_data = get_all_traffic_data(username)
-            profile_name = get_profile_name()  # Get the profile name
-            
-            # Generate the chart
+            profile_name = get_profile_name()
             chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color)
-
-            # Store the generated chart in the cache
-            cache[cache_key] = chart_svg
-
-        # Return the chart as an SVG response
-        return Response(content=chart_svg, media_type="image/svg+xml", headers={"Content-Disposition": "inline; filename=chart.svg"})
+            
+            # Create Response object and cache it
+            response = Response(content=chart_svg, media_type="image/svg+xml", headers={"Content-Disposition": "inline; filename=chart.svg"})
+            cache[cache_key] = response
+            return response
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))  # Raise 404 if theme file is not found
