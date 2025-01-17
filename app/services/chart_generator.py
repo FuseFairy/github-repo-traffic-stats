@@ -1,8 +1,10 @@
-from typing import Dict
+import io
 import os
 import json
 import pygal
+from typing import Dict
 from pygal.style import Style
+from fastapi.responses import StreamingResponse
 
 # Load the theme from a JSON file.
 # If the theme file does not exist, raises a FileNotFoundError.
@@ -29,10 +31,11 @@ def load_theme(theme_name: str) -> Dict:
         return json.load(theme_file)
 
 # Generate a chart based on the provided traffic data and theme.
-# Returns the chart as an SVG string.
-def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_color: str=None) -> str:
+# Returns the chart as an SVG file response.
+def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_color: str=None):
     """
-    Generates a line chart showing GitHub repository traffic data (views and clones).
+    Generates a line chart showing GitHub repository traffic data (views and clones),
+    and returns the chart as an SVG file.
 
     Args:
         profile_name: The profile name to be displayed in the chart title.
@@ -41,7 +44,7 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_co
         bg_color: (Optional) A custom background color for the chart.
 
     Returns:
-        A string representing the chart in SVG format.
+        A FileResponse containing the chart in SVG format.
     """
     # Load the theme
     theme = load_theme(theme_name)
@@ -86,6 +89,13 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, bg_co
     line_chart.add('Clones', clones)
     line_chart.add('Views', views)
 
-    # Render and return the SVG content
+    # Render the SVG content
     svg_content = line_chart.render()
-    return svg_content
+
+    # Create a BytesIO stream to hold the SVG data
+    svg_buffer = io.BytesIO()
+    svg_buffer.write(svg_content)
+    svg_buffer.seek(0)   # Go to the beginning of the stream
+
+    # Return the SVG file as a FileResponse
+    return StreamingResponse(svg_buffer, media_type='image/svg+xml', headers={"Content-Disposition": "inline; filename=chart.svg"})

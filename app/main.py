@@ -41,7 +41,7 @@ def get_traffic_chart(
         profile_name = get_profile_name()  # Get the profile name
         chart_svg = generate_chart(profile_name, traffic_data, theme, bg_color)  # Generate the chart in SVG format
 
-        return Response(content=chart_svg, media_type="image/svg+xml")  # Return the SVG chart as the response
+        return chart_svg
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))  # Raise 404 if theme file is not found
