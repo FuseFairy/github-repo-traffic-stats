@@ -44,7 +44,7 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
         bg_color: (Optional) A custom background color for the chart.
 
     Returns:
-        A FileResponse containing the chart in SVG format.
+        A StreamingResponse containing the chart in SVG format.
     """
     # Load the theme
     theme = load_theme(theme_name)
@@ -71,14 +71,24 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
         major_guide_stroke_color=theme["grid_color"],
         opacity=0.6,
         opacity_hover=0.9,
+        stroke_width=3,
         colors=(
             theme["line_colors"]["clones"],
             theme["line_colors"]["views"]
         )
     )
 
-    # Create the line chart
-    line_chart = pygal.Line(style=custom_style, x_label_rotation=45, height=height, width=width)
+    # Create the line chart with curve interpolation
+    line_chart = pygal.Line(
+        style=custom_style,
+        x_label_rotation=45,
+        height=height,
+        width=width,
+        interpolate='hermite',
+        legend_at_bottom=True,
+        legend_box_size=6
+    )
+
     # Set the title
     line_chart.title = f"{profile_name}'s Repo Traffic"
     # Set the x-axis title
@@ -97,5 +107,5 @@ def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, heigh
     svg_buffer.write(svg_content)
     svg_buffer.seek(0)   # Go to the beginning of the stream
 
-    # Return the SVG file as a FileResponse
+    # Return the SVG file as a StreamingResponse
     return StreamingResponse(svg_buffer, media_type='image/svg+xml', headers={"Content-Disposition": "inline; filename=chart.svg"})
