@@ -11,7 +11,7 @@ load_dotenv(find_dotenv())
 
 app = FastAPI()
 
-cache = TTLCache(maxsize=10, ttl=10)
+cache = TTLCache(maxsize=10, ttl=1800)
 
 @app.get("/")
 def root():
@@ -90,7 +90,7 @@ async def get_traffic_chart(
 
         # Set headers
         headers = {
-            "Cache-Control": "public, max-age=10, must-revalidate",
+            "Cache-Control": "public, max-age=1800, must-revalidate",
             "Content-Disposition": "inline; filename=chart.svg",
             "ETag": chart_hash,
             "Last-Modified": datetime.now(timezone.utc).strftime('%a, %d %b %Y %H:%M:%S GMT')
