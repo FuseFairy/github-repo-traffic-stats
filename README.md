@@ -153,9 +153,9 @@ Here are the currently available themes you can use for your traffic charts. The
 
 | Theme | Preview | Theme | Preview  |
 |---------------|-----------------|---------------|---------|
-| `default`     | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=default" alt="Default Theme" width="400" />  | `cyberpunk` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=cyberpunk" alt="Cyberpunk Theme" width="400" /> |
-| `dark-mode`   | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=dark-mode" alt="Dark Mode Theme" width="400" /> | `ocean-depth` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=ocean-depth" alt="Ocean Depth Theme" width="400" /> |
-| `spring-fresh`| <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=spring-fresh" alt="Spring Fresh Theme" width="400" /> | `tokyo-night` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=tokyo-night" alt="Tokyo Night Theme" width="400" /> |
+| `default`     | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=default" alt="Default Theme" width="300" />  | `cyberpunk` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=cyberpunk" alt="Cyberpunk Theme" width="300" /> |
+| `dark-mode`   | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=dark-mode" alt="Dark Mode Theme" width="300" /> | `ocean-depth` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=ocean-depth" alt="Ocean Depth Theme" width="300" /> |
+| `spring-fresh`| <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=spring-fresh" alt="Spring Fresh Theme" width="300" /> | `tokyo-night` | <img src="https://github-repo-traffic-stats.vercel.app/api?username=FuseFairy&theme=tokyo-night" alt="Tokyo Night Theme" width="300" /> |
 
 
 ### How to Add Your Own Theme 🖌️
