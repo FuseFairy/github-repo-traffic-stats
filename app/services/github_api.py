@@ -1,3 +1,4 @@
+import asyncio
 import os
 from fastapi import HTTPException
 import requests
@@ -11,7 +12,7 @@ HEADERS = {
 }
 
 # Fetch all traffic data for a user's repositories
-def get_all_traffic_data(username: str, exclude_repos: list=None):
+async def get_all_traffic_data(username: str, exclude_repos: list=None):
     """
     Retrieves traffic data (clones and views) for all repositories of a GitHub user.
 
@@ -25,7 +26,7 @@ def get_all_traffic_data(username: str, exclude_repos: list=None):
     Raises:
         HTTPException: If any error occurs while fetching the data.
     """
-    repos = get_user_repos(username)  # Get the list of repositories for the user
+    repos = await get_user_repos(username)  # Get the list of repositories for the user
 
     # Filter out the repositories that are in exclude_repos
     if exclude_repos:
@@ -33,19 +34,20 @@ def get_all_traffic_data(username: str, exclude_repos: list=None):
 
     traffic_data = {}
 
-    for repo_name in repos:
-        traffic = get_repo_traffic(username, repo_name)  # Get traffic data for each repository
-        
+    tasks = [get_repo_traffic(username, repo_name) for repo_name in repos]
+    traffic_results = await asyncio.gather(*tasks)
+
+    for traffic in traffic_results:
         # Process clone data
         for date in traffic["clones"]:
-            date_str = date["timestamp"].split("T")[0]  # Extract date
+            date_str = date["timestamp"].split("T")[0]
             if date_str not in traffic_data:
                 traffic_data[date_str] = {"clones": 0, "views": 0}
             traffic_data[date_str]["clones"] += date["count"]
-
+        
         # Process view data
         for date in traffic["views"]:
-            date_str = date["timestamp"].split("T")[0]  # Extract date
+            date_str = date["timestamp"].split("T")[0]
             if date_str not in traffic_data:
                 traffic_data[date_str] = {"clones": 0, "views": 0}
             traffic_data[date_str]["views"] += date["count"]
@@ -53,7 +55,7 @@ def get_all_traffic_data(username: str, exclude_repos: list=None):
     return traffic_data
 
 # Fetch all repositories of a user
-def get_user_repos(username: str):
+async def get_user_repos(username: str):
     """
     Retrieves all repository names for a specified GitHub user.
 
@@ -78,7 +80,7 @@ def get_user_repos(username: str):
     return list_repos
 
 # Fetch traffic data for a specific repository
-def get_repo_traffic(repo_owner, repo_name):
+async def get_repo_traffic(repo_owner, repo_name):
     """
     Retrieves traffic data (clones and views) for a specific repository.
 
@@ -123,7 +125,7 @@ def get_repo_traffic(repo_owner, repo_name):
     }
 
 # Fetch the profile name of the authenticated GitHub user
-def get_profile_name():
+async def get_profile_name():
     """
     Retrieves the name of the authenticated GitHub user.
 
