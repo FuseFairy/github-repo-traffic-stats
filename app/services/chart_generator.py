@@ -30,25 +30,52 @@ def load_theme(theme_name: str) -> Dict:
 
 # Generate a chart based on the provided traffic data and theme.
 # Returns the chart as an SVG file response.
-def generate_chart(profile_name: str, traffic_data: dict, theme_name: str, height: int, width: int, bg_color: str=None, clones_color: str=None, views_color: str=None):
+def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, height: int, width: int, bg_color: str=None, clones_color: str=None, views_color: str=None, exclude_repos: list=None):
     """
     Generates a line chart showing GitHub repository traffic data (views and clones),
     and returns the chart as an SVG file.
 
     Args:
         - profile_name: The profile name to be displayed in the chart title.
-        - traffic_data: A dictionary containing the traffic data (views and clones) for each date.
+        - traffic_results: A dictionary containing the traffic data (views and clones) for each date.
         - theme_name: The theme name to be applied to the chart.
         - bg_color: (Optional) A custom background color for the chart.
         - clones_color: (Optional) A custom clones stroke color for the chart.
         - views_color: (Optional) A custom views stroke color for the chart.
+        - exclude_repos: Comma-separated list of repository names to exclude from the chart.
 
     Returns:
         A StreamingResponse containing the chart in SVG format.
     """
+    # Filter out the repositories that are in exclude_repos
+    if exclude_repos:
+        exclude_repos_list = exclude_repos.split(",") if "," in exclude_repos else [exclude_repos]
+    else:
+        exclude_repos_list = []
+        
+    traffic_data={}
+    for traffic in traffic_results:
+        repo_name = list(traffic.keys())[0]
+        if repo_name not in exclude_repos_list:
+            traffic_values = list(traffic.values())[0]
+            clones_data = traffic_values["clones"]
+            views_data = traffic_values["views"]
+            # Process clone data
+            for date in clones_data:
+                date_str = date["timestamp"].split("T")[0]
+                if date_str not in traffic_data:
+                    traffic_data[date_str] = {"clones": 0, "views": 0}
+                traffic_data[date_str]["clones"] += date["count"]
+            
+            # Process view data
+            for date in views_data:
+                date_str = date["timestamp"].split("T")[0]
+                if date_str not in traffic_data:
+                    traffic_data[date_str] = {"clones": 0, "views": 0}
+                traffic_data[date_str]["views"] += date["count"]
+
     # Load the theme
     theme = load_theme(theme_name)
-
     # Sort the dates
     sorted_dates = sorted(traffic_data.keys())
     # Extract the day part from the dates

@@ -19,24 +19,19 @@ scheduler = BackgroundScheduler()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler.start()
-    print("Scheduler started.")
+    # print("Scheduler started.")
     try:
         yield
     finally:
-        print("Shutting down scheduler...")
+        # print("Shutting down scheduler...")
         scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
 
-def schedule_update_data(username, exclude_repos, traffic_data_key, profile_name_key):
-    print("Scheduling periodic data update...")
-    if exclude_repos:
-        exclude_repos_list = exclude_repos.split(",")
-    else:
-        exclude_repos_list = None
-
+def schedule_update_data(username, traffic_results_key, profile_name_key):
+    # print("Scheduling periodic data update...")
     scheduler.add_job(generate_new_data, 'interval', minutes=29, id=username,
-                      args=[username, exclude_repos_list, traffic_data_key, profile_name_key], replace_existing=True)
+                      args=[username, traffic_results_key, profile_name_key], replace_existing=True)
 
 @app.get("/")
 def root():
@@ -74,26 +69,21 @@ def get_traffic_chart(
     try:
         # Get If-None-Match header (client's ETag)
         if_none_match = request.headers.get("If-None-Match")
-
-        cache_key_parts = [username]
-        if exclude_repos:
-            cache_key_parts.append(exclude_repos)
-        cache_key = '_'.join(cache_key_parts)
         
         # Check if traffic data is already cached
-        traffic_data_key = f"traffic_data_{cache_key}"
-        profile_name_key = f"profile_name_{cache_key}"
+        traffic_results_key = f"traffic_data_{username}"
+        profile_name_key = f"profile_name_{username}"
 
         # Get or generate data
-        if traffic_data_key not in cache and profile_name_key not in cache:
-            generate_new_data(username, exclude_repos, traffic_data_key, profile_name_key)
-            schedule_update_data(username, exclude_repos, traffic_data_key, profile_name_key)
+        if traffic_results_key not in cache and profile_name_key not in cache:
+            generate_new_data(username, traffic_results_key, profile_name_key)
+            schedule_update_data(username, traffic_results_key, profile_name_key)
 
-        traffic_data = cache[traffic_data_key]
+        traffic_results = cache[traffic_results_key]
         profile_name = cache[profile_name_key]
 
         # Generate chart
-        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color, clones_color, views_color)
+        chart_svg = generate_chart(profile_name, traffic_results, theme, height, width, bg_color, clones_color, views_color, exclude_repos)
         
         # Generate ETag
         chart_hash = hashlib.md5(chart_svg).hexdigest()
@@ -121,16 +111,12 @@ def get_traffic_chart(
         raise HTTPException(status_code=500, detail=str(e))
 
 # Function to generate new data
-def generate_new_data(username, exclude_repos, traffic_data_key, profile_name_key):
-    print("Generating new data...")
-    if exclude_repos:
-        exclude_repos_list = exclude_repos.split(",")
-    else:
-        exclude_repos_list = None
-        
-    traffic_data = get_all_traffic_data(username, exclude_repos_list)
+def generate_new_data(username, traffic_results_key, profile_name_key):
+    # print("Generating new data...")
+
+    traffic_results = get_all_traffic_data(username)
     profile_name = get_profile_name()
     
     # Update cache
-    cache[traffic_data_key] = traffic_data
+    cache[traffic_results_key] = traffic_results
     cache[profile_name_key] = profile_name

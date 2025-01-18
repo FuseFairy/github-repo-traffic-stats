@@ -11,13 +11,12 @@ HEADERS = {
 }
 
 # Fetch all traffic data for a user's repositories
-def get_all_traffic_data(username: str, exclude_repos: list=None):
+def get_all_traffic_data(username: str):
     """
     Retrieves traffic data (clones and views) for all repositories of a GitHub user.
 
     Args:
         - username: The GitHub username whose repository traffic data is to be fetched.
-        - exclude_repos: Comma-separated list of repository names to exclude from the chart.
 
     Returns:
        A dictionary containing traffic data for each day, including the number of clones and views.
@@ -27,30 +26,9 @@ def get_all_traffic_data(username: str, exclude_repos: list=None):
     """
     repos = get_user_repos(username)  # Get the list of repositories for the user
 
-    # Filter out the repositories that are in exclude_repos
-    if exclude_repos:
-        repos = [repo for repo in repos if repo not in exclude_repos]
+    traffic_results = [{repo_name: get_repo_traffic(username, repo_name)} for repo_name in repos]
 
-    traffic_data = {}
-
-    traffic_results = [get_repo_traffic(username, repo_name) for repo_name in repos]
-
-    for traffic in traffic_results:
-        # Process clone data
-        for date in traffic["clones"]:
-            date_str = date["timestamp"].split("T")[0]
-            if date_str not in traffic_data:
-                traffic_data[date_str] = {"clones": 0, "views": 0}
-            traffic_data[date_str]["clones"] += date["count"]
-        
-        # Process view data
-        for date in traffic["views"]:
-            date_str = date["timestamp"].split("T")[0]
-            if date_str not in traffic_data:
-                traffic_data[date_str] = {"clones": 0, "views": 0}
-            traffic_data[date_str]["views"] += date["count"]
-
-    return traffic_data
+    return traffic_results
 
 # Fetch all repositories of a user
 def get_user_repos(username: str):
