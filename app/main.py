@@ -68,7 +68,7 @@ def get_traffic_chart(
         # Generate chart
         chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color, clones_color, views_color)
         
-        chart_hash = hashlib.md5(chart_svg.encode()).hexdigest()
+        chart_hash = hashlib.md5(chart_svg).hexdigest()
         # Set appropriate Cache-Control headers for response caching
         headers = {
             "Cache-Control": "public, max-age=2400",
