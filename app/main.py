@@ -4,7 +4,6 @@ from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
-from datetime import datetime, timezone
 import hashlib
 
 load_dotenv(find_dotenv())
@@ -95,10 +94,9 @@ async def get_traffic_chart(
 
         # Set headers
         headers = {
-            "Cache-Control": "public, max-age=1800, must-revalidate",
-            "Content-Disposition": "inline; filename=chart.svg",
-            "ETag": chart_hash,
-            "Last-Modified": datetime.now(timezone.utc).strftime('%a, %d %b %Y %H:%M:%S GMT')
+            "Content-Type": "image/svg+xml; charset=utf-8",
+            "Cache-Control": "public, max-age=2400, must-revalidate",
+            "ETag": chart_hash
         }
 
         return Response(
