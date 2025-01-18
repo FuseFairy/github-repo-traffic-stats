@@ -9,7 +9,6 @@ load_dotenv(find_dotenv())
 
 app = FastAPI()
 
-# Create a TTL (time-to-live) cache with a max size of 10 and expiration time of 86400 seconds (24 hours)
 cache = TTLCache(maxsize=10, ttl=1800)
 
 @app.get("/")
@@ -61,7 +60,6 @@ def get_traffic_chart(
             traffic_data = get_all_traffic_data(username, exclude_repos)
             profile_name = get_profile_name()
 
-            # Cache traffic data and profile name for 24 hours
             cache[traffic_data_key] = traffic_data
             cache[profile_name_key] = profile_name
 
@@ -70,7 +68,7 @@ def get_traffic_chart(
 
         # Set appropriate Cache-Control headers for response caching
         headers = {
-            "Cache-Control": "public, max-age=1800",  # Cache for 24 hours
+            "Cache-Control": "public, max-age=2400",
             "Content-Disposition": "inline; filename=chart.svg"
         }
         
