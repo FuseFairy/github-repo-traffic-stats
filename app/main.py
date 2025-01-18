@@ -49,10 +49,15 @@ async def get_traffic_chart(
     try:
         # Get If-None-Match header (client's ETag)
         if_none_match = request.headers.get("If-None-Match")
+
+        cache_key_parts = [username]
+        if exclude_repos:
+            cache_key_parts.append(exclude_repos)
+        cache_key = '_'.join(cache_key_parts)
         
         # Check if traffic data is already cached
-        traffic_data_key = f"traffic_data_{username}"
-        profile_name_key = f"profile_name_{username}"
+        traffic_data_key = f"traffic_data_{cache_key}"
+        profile_name_key = f"profile_name_{cache_key}"
         
         # Function to generate new data
         async def generate_new_data():
