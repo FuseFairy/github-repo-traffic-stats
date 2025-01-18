@@ -3,6 +3,9 @@ from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 app = FastAPI()
 

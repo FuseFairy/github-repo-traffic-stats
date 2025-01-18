@@ -1,9 +1,6 @@
 import os
 from fastapi import HTTPException
-from dotenv import load_dotenv
 import requests
-
-load_dotenv()
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BASE_URL = "https://api.github.com"
