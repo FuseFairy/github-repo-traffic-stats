@@ -1,9 +1,9 @@
 {
-    "background_color": "rgba(26,27,39,1)",
+    "background_color": "#1a1b27",
     "line_colors": {
-        "clones": "rgba(138,173,244,1)",
-        "views": "rgba(203,166,247,1)"
+        "clones": "#8aadf4",
+        "views": "#cba6f7"
     },
-    "text_color": "rgba(205,214,244,1)",
-    "grid_color": "rgba(65,72,104,1)"
+    "text_color": "#cdd6f4",
+    "grid_color": "#414868"
 }

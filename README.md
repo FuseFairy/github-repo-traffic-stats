@@ -166,14 +166,16 @@ Here are the currently available themes you can use for your traffic charts. The
 
    ```json
    {
-      "background_color": "rgba(0, 26, 51, 1)",
-      "line_colors": {
-        "clones": "rgba(0, 204, 255, 1)",
-        "views": "rgba(0, 255, 204, 1)"
-      },
-      "text_color": "rgba(255, 255, 255, 1)",
-      "grid_color": "rgba(30, 58, 81, 1)"
+    "background_color": "#222222",
+    "line_colors": {
+        "clones": "#5f9ea0",
+        "views": "#ff6347"
+    },
+    "text_color": "#ffffff",
+    "grid_color": "#5a5a5a"
    }
+   ```
+
 3. Submit a pull request with your new theme.
 
 Your contribution will help make this project even better! 🚀
