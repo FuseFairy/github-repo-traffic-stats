@@ -6,7 +6,7 @@ This project provides an API for fetching and visualizing traffic data of **your
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
 - 🎨Support for different themes and background colors
-- 🔃Data is automatically refreshed every 24 hours
+- 🔃Data is automatically refreshed every 30 minutes
 
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
