@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+import traceback
 from fastapi import FastAPI, Query, Response, HTTPException, Request
 from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
@@ -5,19 +7,43 @@ from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
 import hashlib
+from apscheduler.schedulers.background import BackgroundScheduler
 
 load_dotenv(find_dotenv())
 
-app = FastAPI()
+cache = TTLCache(maxsize=10, ttl=float('inf'))
 
-cache = TTLCache(maxsize=10, ttl=1800)
+# Background Scheduler setup
+scheduler = BackgroundScheduler()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler.start()
+    print("Scheduler started.")
+    try:
+        yield
+    finally:
+        print("Shutting down scheduler...")
+        scheduler.shutdown()
+
+app = FastAPI(lifespan=lifespan)
+
+def schedule_update_data(username, exclude_repos, traffic_data_key, profile_name_key):
+    print("Scheduling periodic data update...")
+    if exclude_repos:
+        exclude_repos_list = exclude_repos.split(",")
+    else:
+        exclude_repos_list = None
+
+    scheduler.add_job(generate_new_data, 'interval', minutes=29, id=username,
+                      args=[username, exclude_repos_list, traffic_data_key, profile_name_key], replace_existing=True)
 
 @app.get("/")
 def root():
     return RedirectResponse(url="https://github.com/FuseFairy/github-repo-traffic")
 
 @app.get("/api")
-async def get_traffic_chart(
+def get_traffic_chart(
     request: Request,
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
@@ -26,7 +52,7 @@ async def get_traffic_chart(
     views_color: str = Query(None, description="Color for views line (e.g., '33FF57' for green without '#')"),
     height: int = Query(400, ge=400, description="Chart height in pixels"),
     width: int = Query(800, ge=800, description="Chart width in pixels"),
-    exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart")
+    exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart"),
 ):
     """
     Endpoint to get the traffic chart for a GitHub user's repository.
@@ -57,33 +83,17 @@ async def get_traffic_chart(
         # Check if traffic data is already cached
         traffic_data_key = f"traffic_data_{cache_key}"
         profile_name_key = f"profile_name_{cache_key}"
-        
-        # Function to generate new data
-        async def generate_new_data():
-            if exclude_repos:
-                exclude_repos_list = exclude_repos.split(",")
-            else:
-                exclude_repos_list = None
-                
-            traffic_data = await get_all_traffic_data(username, exclude_repos_list)
-            profile_name = await get_profile_name()
-            
-            # Update cache
-            cache[traffic_data_key] = traffic_data
-            cache[profile_name_key] = profile_name
-            
-            return traffic_data, profile_name
 
         # Get or generate data
-        if traffic_data_key in cache and profile_name_key in cache:
-            traffic_data = cache[traffic_data_key]
-            profile_name = cache[profile_name_key]
-        else:
-            traffic_data, profile_name = await generate_new_data()
+        if traffic_data_key not in cache and profile_name_key not in cache:
+            generate_new_data(username, exclude_repos, traffic_data_key, profile_name_key)
+            schedule_update_data(username, exclude_repos, traffic_data_key, profile_name_key)
+
+        traffic_data = cache[traffic_data_key]
+        profile_name = cache[profile_name_key]
 
         # Generate chart
-        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, 
-                                 bg_color, clones_color, views_color)
+        chart_svg = generate_chart(profile_name, traffic_data, theme, height, width, bg_color, clones_color, views_color)
         
         # Generate ETag
         chart_hash = hashlib.md5(chart_svg).hexdigest()
@@ -108,4 +118,23 @@ async def get_traffic_chart(
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+        print(f"Error: {str(e)}")
+        print("Detailed Stack Trace:")
+        print(traceback.format_exc())
+        
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Function to generate new data
+def generate_new_data(username, exclude_repos, traffic_data_key, profile_name_key):
+    print("Generating new data...")
+    if exclude_repos:
+        exclude_repos_list = exclude_repos.split(",")
+    else:
+        exclude_repos_list = None
+        
+    traffic_data = get_all_traffic_data(username, exclude_repos_list)
+    profile_name = get_profile_name()
+    
+    # Update cache
+    cache[traffic_data_key] = traffic_data
+    cache[profile_name_key] = profile_name

@@ -9,6 +9,7 @@ requests = "*"
 python-dotenv = "*"
 pygal = "*"
 cachetools = "*"
+apscheduler = "*"
 
 [dev-packages]
 
