@@ -117,12 +117,8 @@ def get_traffic_chart(
 
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        print("Detailed Stack Trace:")
-        print(traceback.format_exc())
-        
-        raise HTTPException(status_code=500, detail="Internal server error")
+    except Exception as e:        
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Function to generate new data
 def generate_new_data(username, exclude_repos, traffic_data_key, profile_name_key):
