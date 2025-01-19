@@ -120,7 +120,7 @@ async def get_traffic_chart(
         # Set headers
         headers = {
             "Content-Type": "image/svg+xml; charset=utf-8",
-            "Cache-Control": "max-age=31536000",
+            "Cache-Control": "max-age=0",
             "ETag": etag,
         }
 
