@@ -2,6 +2,9 @@
 
 This project provides an API for fetching and visualizing traffic data of **your GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
 
+> [!NOTE]  
+> Due to GitHub API limitations, you can only retrieve traffic data (such as views and clones) for the GitHub repositories you own through your own self-hosted API.
+
 ## ✨Features
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
@@ -118,7 +121,7 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 | `views_color`      | `string` | Color of the views stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `clones_point_color`      | `string` | Color of the clones point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `views_point_color`      | `string` | Color of the views point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `radius`      | `integer` | Corner radius for the chart's rectangular background.  | 20           | ❌      |
+| `radius`      | `integer` | Corner radius for the chart's rectangular background.  | `20`           | ❌      |
 | `height`        | `integer`| Height of the chart in pixels **(minimum: 400)**.                                                          | `400`          | ❌      |
 | `width`         | `integer`| Width of the chart in pixels **(minimum: 800)**.                                                           | `800`          | ❌      |
 | `exclude_repos` | `string` | A comma-separated list of repository names to exclude from the traffic data.                               | None           | ❌      |
