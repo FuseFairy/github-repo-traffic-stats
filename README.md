@@ -17,7 +17,7 @@ Here’s an example of a traffic chart generated from a public GitHub repository
 ```
 ![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000)
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000)
+![Sample Chart](https://raw.githubusercontent.com/gist/FuseFairy/c7f619079a91afedbf4e949977fa2df4/raw/e868d3bc96ce8755d7f8beb1130e5d7579c9e2c0/demo-traffic.svg)
 
 ## 🚀How to Deploy Your Own Instance on Vercel
 <details>
@@ -161,9 +161,9 @@ Here are the currently available themes you can use for your traffic charts. The
 
 | Theme | Preview | Theme | Preview  |
 |---------------|-----------------|---------------|---------|
-| `default`     | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=default&radius=16" alt="Default Theme" width="250" />  | `cyberpunk` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=cyberpunk&radius=16" alt="Cyberpunk Theme" width="250" /> |
-| `dark-mode`   | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=dark-mode&radius=16" alt="Dark Mode Theme" width="250" /> | `ocean-depth` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=ocean-depth&radius=16" alt="Ocean Depth Theme" width="250" /> |
-| `spring-fresh`| <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=spring-fresh&radius=16" alt="Spring Fresh Theme" width="250" /> | `tokyo-night` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&radius=16" alt="Tokyo Night Theme" width="250" /> |
+| `default`     | <img src="https://raw.githubusercontent.com/gist/FuseFairy/55338818fc1344253b696d803d35e71c/raw/31c11a392dc7aa3535d05e9785b566b2dbbebb21/default-traffic.svg" alt="Default Theme" width="250" />  | `cyberpunk` | <img src="https://raw.githubusercontent.com/gist/FuseFairy/9db14fc42f2cd48236e4758ceece730d/raw/533b3ce07c81478cad3038a5ebf3deb857b399b0/cyberpunk-traffic.svg" alt="Cyberpunk Theme" width="250" /> |
+| `dark-mode`   | <img src="https://raw.githubusercontent.com/gist/FuseFairy/7a2d9a5c6dec369455ab0e42cb49aca8/raw/8ff0de46b5f29f73c20765dba869da110a85258b/dark-mode-traffic.svg" alt="Dark Mode Theme" width="250" /> | `ocean-depth` | <img src="https://raw.githubusercontent.com/gist/FuseFairy/4bda8dc6f0ef3586dca7795928b2d63d/raw/d9b96212facecf957d6a58c7a65d46be36b7051d/ocean-depth-traffic.svg" alt="Ocean Depth Theme" width="250" /> |
+| `spring-fresh`| <img src="https://raw.githubusercontent.com/gist/FuseFairy/18d2ce24fe2ce4141a1d29a7d7294bdc/raw/e27c334861808f1e333353fd6d31c029025d08b5/spring-fresh-traffic.svg" alt="Spring Fresh Theme" width="250" /> | `tokyo-night` | <img src="https://raw.githubusercontent.com/gist/FuseFairy/89fa84f331c4fa7e812c59e2e0df06ce/raw/fce3445fded9ef0a703adb3d8c67ed7ffed2a75a/tokyo-night-traffic.svg" alt="Tokyo Night Theme" width="250" /> |
 
 
 ### How to Add Your Own Theme 🖌️
