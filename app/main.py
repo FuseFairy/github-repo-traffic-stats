@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Query, Response, HTTPException, Request
+from fastapi import FastAPI, Query, Response, HTTPException
 from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
@@ -7,7 +7,6 @@ from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
-import hashlib
 
 load_dotenv(find_dotenv())
 
@@ -37,7 +36,6 @@ def root():
 
 @app.get("/api")
 async def get_traffic_chart(
-    request: Request,
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
@@ -112,16 +110,10 @@ async def get_traffic_chart(
         chart_svg = chart_cache[chart_cache_key]
         task_last_called[chart_cache_key] = datetime.now()
 
-        # Generate ETag using hashlib
-        etag = hashlib.sha256(chart_svg.encode('utf-8')).hexdigest()
-        if 'If-None-Match' in request.headers and request.headers['If-None-Match'] == etag:
-            return Response(status_code=304)  
-
         # Set headers
         headers = {
             "Content-Type": "image/svg+xml; charset=utf-8",
-            "Cache-Control": "public, max-age=0, must-revalidate",
-            "ETag": etag,
+            "Cache-Control": "public, max-age=1800, must-revalidate",
         }
 
         return Response(
