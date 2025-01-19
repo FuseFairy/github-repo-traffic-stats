@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Query, Response, HTTPException, Request
+from fastapi import FastAPI, Query, Response, HTTPException
 from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
@@ -36,7 +36,6 @@ def root():
 
 @app.get("/api")
 def get_traffic_chart(
-    request: Request,
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
