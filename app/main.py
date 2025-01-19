@@ -35,7 +35,7 @@ def root():
     return RedirectResponse(url="https://github.com/FuseFairy/github-repo-traffic")
 
 @app.get("/api")
-def get_traffic_chart(
+async def get_traffic_chart(
     username: str = Query(..., description="GitHub username"),
     theme: str = Query("default", description="Chart theme (e.g., 'tokyo-night')"),
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
