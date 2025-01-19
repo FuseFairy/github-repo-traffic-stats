@@ -100,7 +100,6 @@ def generate_chart(profile_name: str, traffic_results: dict, theme: str, height:
     Returns:
         A svg string representing the generated chart.
     """
-    print("Generating chart...")
     # Handling of excluded repos
     if exclude_repos:
         exclude_repos_list = exclude_repos.split(",") if "," in exclude_repos else [exclude_repos]
