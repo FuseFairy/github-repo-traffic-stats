@@ -19,7 +19,7 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    scheduler.add_job(check_and_remove_task, 'interval', days=8, id=f"check_task")
+    scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task")
     scheduler.start()
     # print("Scheduler started.")
     try:
@@ -118,7 +118,7 @@ def check_and_remove_task():
     
     for chart_cache_key, last_called in task_last_called.items():
         # If the task has not been accessed for more than 2 days
-        if now - last_called > timedelta(weeks=1):
+        if now - last_called > timedelta(days=2):
             # Remove the job associated with the chart cache key
             scheduler.remove_job(chart_cache_key)
             
