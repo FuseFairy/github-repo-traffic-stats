@@ -2,7 +2,7 @@
     "background_color": "#14141e",
     "line_colors": {
       "clones": "#00ffff66",
-      "views": "#ff00ff"
+      "views": "#ff00ff66"
     },
     "point_colors": {
       "clones": "#00ffff",
