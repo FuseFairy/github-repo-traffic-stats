@@ -14,9 +14,9 @@ This project provides an API for fetching and visualizing traffic data of **your
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=16)
+![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000)
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=16)
+![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000)
 
 ## 🚀How to Deploy Your Own Instance on Vercel
 <details>
@@ -125,6 +125,7 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 | `height`        | `integer`| Height of the chart in pixels **(minimum: 400)**.                                                          | `400`          | ❌      |
 | `width`         | `integer`| Width of the chart in pixels **(minimum: 800)**.                                                           | `800`          | ❌      |
 | `exclude_repos` | `string` | A comma-separated list of repository names to exclude from the traffic data.                               | None           | ❌      |
+| `ticks` | `integer` | The desired number of evenly spaced markers on the y-axis to improve chart readability. The actual number may vary slightly based on data. **(minimum: 5)**                           | `5`          | ❌      |
 
 **Usage Examples**
 

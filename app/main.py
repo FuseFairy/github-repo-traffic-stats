@@ -19,8 +19,8 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task")
     scheduler.start()
+    scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task", replace_existing=True)
     # print("Scheduler started.")
     try:
         yield
@@ -47,6 +47,7 @@ def get_traffic_chart(
     height: int = Query(400, ge=400, description="Chart height in pixels"),
     width: int = Query(800, ge=800, description="Chart width in pixels"),
     exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart"),
+    ticks: int = Query(5,ge=5, description="Number of y-axis ticks"),
 ):
     """
     Endpoint to get the traffic chart for a GitHub user's repository.
@@ -64,12 +65,13 @@ def get_traffic_chart(
         - height: Height of the chart.
         - width: Width of the chart.
         - exclude_repos: Comma-separated list of repository names to exclude from the chart.
+        - ticks: Number of y-axis ticks.
 
     Returns:
         A response containing the chart in SVG format.
     """
     try:
-        chart_cache_key = f"{username}_{theme}_{bg_color}_{clones_color}_{views_color}_{clones_point_color}_{views_point_color}_{radius}_{height}_{width}_{exclude_repos}"
+        chart_cache_key = f"{username}_{theme}_{bg_color}_{clones_color}_{views_color}_{clones_point_color}_{views_point_color}_{radius}_{height}_{width}_{exclude_repos}_{ticks}"
         
         # Check if traffic data is already cached
         traffic_results_key = f"traffic_data_{username}"
@@ -86,9 +88,9 @@ def get_traffic_chart(
             profile_name = cache[profile_name_key]
 
             # Generate chart
-            chart_cache[chart_cache_key] = generate_chart(profile_name, traffic_results, theme, height, width, radius, bg_color, 
+            chart_cache[chart_cache_key] = generate_chart(profile_name, traffic_results, theme, height, width, radius, ticks, bg_color, 
                                                           clones_color, views_color, clones_point_color, views_point_color, exclude_repos)
-            scheduler.add_job(generate_chart, 'interval', minutes=29, id=chart_cache_key, args=[profile_name, traffic_results, theme, height, width, radius, bg_color, 
+            scheduler.add_job(generate_chart, 'interval', minutes=29, id=chart_cache_key, args=[profile_name, traffic_results, theme, height, width, radius, ticks, bg_color, 
                                                           clones_color, views_color, clones_point_color, views_point_color, exclude_repos], replace_existing=True)
         
         chart_svg = chart_cache[chart_cache_key]

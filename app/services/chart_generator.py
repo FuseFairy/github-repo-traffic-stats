@@ -29,7 +29,7 @@ def load_theme(theme_name: str) -> Dict:
     with open(theme_path, "r") as theme_file:
         return json.load(theme_file)
 
-def calculate_y_ticks(max_value: float, target_ticks: int = 5) -> tuple[float, list[float]]:
+def calculate_y_ticks(max_value: float, target_ticks: int) -> tuple[float, list[float]]:
     """Calculate appropriate y-axis ticks
     
     Args:
@@ -42,7 +42,6 @@ def calculate_y_ticks(max_value: float, target_ticks: int = 5) -> tuple[float, l
     if max_value <= 0:
         return 0, [0]
     
-    # 找到合適的刻度單位
     magnitude = 10 ** math.floor(math.log10(max_value))
     possible_steps = [1, 2, 5, 10]
     
@@ -53,8 +52,7 @@ def calculate_y_ticks(max_value: float, target_ticks: int = 5) -> tuple[float, l
             nice_max = n * unit
             ticks = [i * unit for i in range(n + 1)]
             return nice_max, ticks
-            
-    # 如果上面都不合適，使用最後的單位
+    
     unit = possible_steps[-1] * magnitude / 10
     n = math.ceil(max_value / unit)
     nice_max = n * unit
@@ -78,7 +76,7 @@ def create_smooth_path(data_points):
 
 # Generate a chart based on the provided traffic data and theme.
 # Returns the chart as an SVG file response.
-def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, height: int, width: int, radius: int,
+def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, height: int, width: int, radius: int, ticks,
                   bg_color: str=None, clones_color: str=None, views_color: str=None, clones_point_color: str=None,
                   views_point_color: str=None, exclude_repos: list=None):
     """
@@ -218,7 +216,7 @@ def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, he
         stroke_opacity=grid_color_opacity
     ))
 
-    nice_max, y_ticks = calculate_y_ticks(max_value)
+    nice_max, y_ticks = calculate_y_ticks(max_value, ticks)
     y_scale = plot_height / nice_max if nice_max > 0 else 1
 
     # Draw horizontal gridlines and y-axis scales.
