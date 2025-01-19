@@ -76,7 +76,7 @@ def create_smooth_path(data_points):
 
 # Generate a chart based on the provided traffic data and theme.
 # Returns the chart as an SVG file response.
-def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, height: int, width: int, radius: int, ticks,
+def generate_chart(profile_name: str, traffic_results: dict, theme: str, height: int, width: int, radius: int, ticks: int,
                   bg_color: str=None, clones_color: str=None, views_color: str=None, clones_point_color: str=None,
                   views_point_color: str=None, exclude_repos: list=None):
     """
@@ -100,6 +100,7 @@ def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, he
     Returns:
         A svg string representing the generated chart.
     """
+    print("Generating chart...")
     # Handling of excluded repos
     if exclude_repos:
         exclude_repos_list = exclude_repos.split(",") if "," in exclude_repos else [exclude_repos]
@@ -128,7 +129,7 @@ def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, he
                 traffic_data[date_str]["views"] += date["count"]
     
     # load theme
-    theme = load_theme(theme_name)
+    theme = load_theme(theme)
     
     # prepare data
     sorted_dates = sorted(traffic_data.keys())
@@ -318,7 +319,7 @@ def generate_chart(profile_name: str, traffic_results: dict, theme_name: str, he
     # add x-axis title
     dwg.add(dwg.text(
         "Days",
-        insert=(width/2, height-margin['bottom']/3),  # 改成 margin['bottom']/3
+        insert=(width/2, height-margin['bottom']/3),
         text_anchor="middle",
         fill=text_color,
         fill_opacity=text_color_opacity,

@@ -87,11 +87,25 @@ def get_traffic_chart(
             traffic_results = cache[traffic_results_key]
             profile_name = cache[profile_name_key]
 
+            chart_params = {
+                "profile_name": profile_name,
+                "traffic_results": traffic_results,
+                "theme": theme,
+                "height": height,
+                "width": width,
+                "radius": radius,
+                "ticks": ticks,
+                "bg_color": bg_color,
+                "clones_color": clones_color,
+                "views_color": views_color,
+                "clones_point_color": clones_point_color,
+                "views_point_color": views_point_color,
+                "exclude_repos": exclude_repos
+            }
+            
             # Generate chart
-            chart_cache[chart_cache_key] = generate_chart(profile_name, traffic_results, theme, height, width, radius, ticks, bg_color, 
-                                                          clones_color, views_color, clones_point_color, views_point_color, exclude_repos)
-            scheduler.add_job(generate_chart, 'interval', minutes=29, id=chart_cache_key, args=[profile_name, traffic_results, theme, height, width, radius, ticks, bg_color, 
-                                                          clones_color, views_color, clones_point_color, views_point_color, exclude_repos], replace_existing=True)
+            chart_cache[chart_cache_key] = generate_chart(**chart_params)
+            scheduler.add_job(generate_chart, 'interval', minutes=29, id=chart_cache_key, kwargs=chart_params, replace_existing=True)
         
         chart_svg = chart_cache[chart_cache_key]
         task_last_called[chart_cache_key] = datetime.now()
