@@ -1,6 +1,7 @@
 fastapi==0.115.6
 requests==2.32.3
 python-dotenv==1.0.1
-pygal==3.0.5
 cachetools==5.5.0
 apscheduler==3.11.0
+svgpathtools==1.6.1
+svgwrite==1.4.3

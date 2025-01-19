@@ -7,9 +7,10 @@ name = "pypi"
 fastapi = "*"
 requests = "*"
 python-dotenv = "*"
-pygal = "*"
 cachetools = "*"
 apscheduler = "*"
+svgpathtools = "*"
+svgwrite = "*"
 
 [dev-packages]
 

@@ -45,6 +45,9 @@ def get_traffic_chart(
     bg_color: str = Query(None, description="Background color (e.g., '00000000' for transparent black, 'FFFFFF' for white without '#')"),
     clones_color: str = Query(None, description="Color for clones line (e.g., 'FF5733' for orange-red without '#')"),
     views_color: str = Query(None, description="Color for views line (e.g., '33FF57' for green without '#')"),
+    clones_point_color: str = Query(None, description="Color for clone points (e.g., 'FF5733' for orange-red without '#')"),
+    views_point_color: str = Query(None, description="Color for view points (e.g., '33FF57' for green without '#')"),
+    radius: int = Query(20, description="Corner radius for the chart's rectangular background"),
     height: int = Query(400, ge=400, description="Chart height in pixels"),
     width: int = Query(800, ge=800, description="Chart width in pixels"),
     exclude_repos: str = Query(None, description="Comma-separated list of repository names to exclude from the chart"),
@@ -59,6 +62,9 @@ def get_traffic_chart(
         - bg_color: Optional background color for the chart.
         - clones_color: Optional clones stroke color for the chart.
         - views_color: Optional views stroke color for the chart.
+        - clones_point_color: Optional clones point color for the chart.
+        - views_point_color: Optional views point color for the chart.
+        - radius: Corner radius for the chart's rectangular background.
         - height: Height of the chart.
         - width: Width of the chart.
         - exclude_repos: Comma-separated list of repository names to exclude from the chart.
@@ -83,10 +89,11 @@ def get_traffic_chart(
         profile_name = cache[profile_name_key]
 
         # Generate chart
-        chart_svg = generate_chart(profile_name, traffic_results, theme, height, width, bg_color, clones_color, views_color, exclude_repos)
+        chart_svg = generate_chart(profile_name, traffic_results, theme, height, width, radius, bg_color,
+                                   clones_color, views_color, clones_point_color, views_point_color, exclude_repos)
         
         # Generate ETag
-        chart_hash = hashlib.md5(chart_svg).hexdigest()
+        chart_hash = hashlib.md5(chart_svg.encode("utf-8")).hexdigest()
         
         # If ETag matches, return 304 Not Modified
         if if_none_match and if_none_match == chart_hash:
