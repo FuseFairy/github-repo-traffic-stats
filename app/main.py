@@ -80,7 +80,7 @@ async def get_traffic_chart(
         # Get or generate data
         if traffic_results_key not in cache and profile_name_key not in cache:
             generate_new_data(username, traffic_results_key, profile_name_key)
-            scheduler.add_job(generate_new_data, 'interval', minutes=28, id=username,
+            scheduler.add_job(generate_new_data, 'interval', minutes=26, id=username,
                       args=[username, traffic_results_key, profile_name_key], replace_existing=True)
 
         if chart_cache_key not in chart_cache:
@@ -105,7 +105,7 @@ async def get_traffic_chart(
             
             # Generate chart
             chart_cache[chart_cache_key] = generate_chart(**chart_params)
-            scheduler.add_job(generate_chart, 'interval', minutes=29, id=chart_cache_key, kwargs=chart_params, replace_existing=True)
+            scheduler.add_job(generate_chart, 'interval', minutes=28, id=chart_cache_key, kwargs=chart_params, replace_existing=True)
         
         chart_svg = chart_cache[chart_cache_key]
         task_last_called[chart_cache_key] = datetime.now()
