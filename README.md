@@ -1,4 +1,5 @@
-# 📊Github Profile Repo Analytics
+
+[![github-profile-repo-analytics][socialify-image]][github-profile-repo-analytics--url]
 
 This project provides an API for fetching and visualizing traffic data of **your GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
 
@@ -194,3 +195,7 @@ Your contribution will help make this project even better! 🚀
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/FuseFairy/github-repo-traffic-stats/blob/main/LICENSE) file for details.
+
+[socialify-image]: https://socialify.git.ci/FuseFairy/github-profile-repo-analytics/image?description=1&font=Jost&language=1&logo=https%3A%2F%2Frawcdn.githack.com%2Fgist%2FFuseFairy%2Fc9b6fdf469860297382ffd90d032e4b0%2Fraw%2Fa265be628a9cc241e345fa8c4753912aceffb726%2Ffastapi.svg&pattern=Formal+Invitation&theme=Light
+
+[github-profile-repo-analytics--url]: https://github.com/FuseFairy/github-profile-repo-analytics
