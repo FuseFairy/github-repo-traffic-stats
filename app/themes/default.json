@@ -1,6 +1,10 @@
 {
     "background_color": "#ffffff",
     "line_colors": {
+        "clones": "#38a1dd66",
+        "views": "#55bd5c66"
+    },
+    "point_colors": {
         "clones": "#38a1dd",
         "views": "#55bd5c"
     },
