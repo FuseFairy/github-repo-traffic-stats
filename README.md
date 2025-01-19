@@ -2,6 +2,9 @@
 
 This project provides an API for fetching and visualizing traffic data of **your GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
 
+> [!NOTE]  
+> Due to GitHub API limitations, you can only retrieve traffic data (such as views and clones) for the GitHub repositories you own through your own self-hosted API.
+
 ## ✨Features
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
@@ -11,9 +14,9 @@ This project provides an API for fetching and visualizing traffic data of **your
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=15)
+![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=16)
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=15)
+![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000&radius=16)
 
 ## 🚀How to Deploy Your Own Instance on Vercel
 <details>
@@ -118,7 +121,7 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 | `views_color`      | `string` | Color of the views stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `clones_point_color`      | `string` | Color of the clones point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `views_point_color`      | `string` | Color of the views point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `radius`      | `string` | Corner radius for the chart's rectangular background.  | 20           | ❌      |
+| `radius`      | `integer` | Corner radius for the chart's rectangular background.  | `20`           | ❌      |
 | `height`        | `integer`| Height of the chart in pixels **(minimum: 400)**.                                                          | `400`          | ❌      |
 | `width`         | `integer`| Width of the chart in pixels **(minimum: 800)**.                                                           | `800`          | ❌      |
 | `exclude_repos` | `string` | A comma-separated list of repository names to exclude from the traffic data.                               | None           | ❌      |
@@ -156,9 +159,9 @@ Here are the currently available themes you can use for your traffic charts. The
 
 | Theme | Preview | Theme | Preview  |
 |---------------|-----------------|---------------|---------|
-| `default`     | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=default&radius=15" alt="Default Theme" width="250" />  | `cyberpunk` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=cyberpunk&radius=15" alt="Cyberpunk Theme" width="250" /> |
-| `dark-mode`   | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=dark-mode&radius=15" alt="Dark Mode Theme" width="250" /> | `ocean-depth` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=ocean-depth&radius=15" alt="Ocean Depth Theme" width="250" /> |
-| `spring-fresh`| <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=spring-fresh&radius=15" alt="Spring Fresh Theme" width="250" /> | `tokyo-night` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&radius=15" alt="Tokyo Night Theme" width="250" /> |
+| `default`     | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=default&radius=16" alt="Default Theme" width="250" />  | `cyberpunk` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=cyberpunk&radius=16" alt="Cyberpunk Theme" width="250" /> |
+| `dark-mode`   | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=dark-mode&radius=16" alt="Dark Mode Theme" width="250" /> | `ocean-depth` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=ocean-depth&radius=16" alt="Ocean Depth Theme" width="250" /> |
+| `spring-fresh`| <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=spring-fresh&radius=16" alt="Spring Fresh Theme" width="250" /> | `tokyo-night` | <img src="https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&radius=16" alt="Tokyo Night Theme" width="250" /> |
 
 
 ### How to Add Your Own Theme 🖌️
