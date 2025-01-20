@@ -1,16 +1,20 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "app/main.py",
-        "use": "@vercel/python"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/app/main.py"
-      }
-    ]
+  "version": 2,
+  "devCommand": "uvicorn app.main:app",
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/app/main.py"
+    }
+  ],
+  "env": {
+    "APP_MODULE": "main:app"
   }
+}
   

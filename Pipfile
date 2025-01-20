@@ -11,6 +11,7 @@ cachetools = "*"
 apscheduler = "*"
 svgpathtools = "*"
 svgwrite = "*"
+uvicorn = "*"
 
 [dev-packages]
 
