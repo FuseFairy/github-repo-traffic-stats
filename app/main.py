@@ -7,6 +7,7 @@ from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, timedelta
+from app.utils.logger import logger
 
 load_dotenv(find_dotenv())
 
@@ -22,17 +23,17 @@ async def lifespan(app: FastAPI):
     if not scheduler.running:
         scheduler.start()
         scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task", replace_existing=True)
-    # print("Scheduler started.")
+    logger.info("Scheduler started!")
     try:
         yield
     finally:
-        # print("Shutting down scheduler...")
+        logger.info("Shutting down scheduler...")
         scheduler.shutdown()
 
 app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
-def root():
+async def root():
     return RedirectResponse(url="https://github.com/FuseFairy/github-repo-traffic")
 
 @app.get("/api")
@@ -124,8 +125,10 @@ async def get_traffic_chart(
         )
 
     except FileNotFoundError as e:
+        logger.error(f"File not found: {e}")
         raise HTTPException(status_code=404, detail=str(e))
-    except Exception as e:        
+    except Exception as e:
+        logger.error(f"Unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 def check_and_remove_task():
@@ -147,8 +150,7 @@ def check_and_remove_task():
 
 # Function to generate new data
 def generate_new_data(username, traffic_results_key, profile_name_key):
-    # print("Generating new data...")
-
+    logger.info("Generating new data...")
     traffic_results = get_all_traffic_data(username)
     profile_name = get_profile_name()
     
