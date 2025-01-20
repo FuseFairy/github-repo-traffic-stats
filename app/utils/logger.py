@@ -1,37 +1,23 @@
 import logging
+import sys
+from datetime import datetime
+import time
 
-class TerminalColor:
-    RESET = '\033[0m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
-
-class ColorFormatter(logging.Formatter):
-    COLORS = {
-        logging.DEBUG: TerminalColor.CYAN,
-        logging.INFO: TerminalColor.GREEN,
-        logging.WARNING: TerminalColor.YELLOW,
-        logging.ERROR: TerminalColor.RED,
-        logging.CRITICAL: TerminalColor.RED + TerminalColor.WHITE
-    }
-
-    def format(self, record):
-        level_color = self.COLORS.get(record.levelno, TerminalColor.RESET)
-        reset_color = TerminalColor.RESET
-        message = super().format(record)
-        return f"{level_color}{message}{reset_color}"
+class LocalTimeFormatter(logging.Formatter):
+    """Custom formatter to display server local time."""
+    def formatTime(self, record, datefmt=None):
+        local_time = time.localtime(record.created)
+        if datefmt:
+            return time.strftime(datefmt, local_time)
+        return time.strftime('%Y-%m-%d %H:%M:%S', local_time)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
 
-formatter = ColorFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = LocalTimeFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
