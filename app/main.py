@@ -1,36 +1,17 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, Query, Response, HTTPException
 from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
-from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime, timedelta
 from app.utils.logger import logger
 
 load_dotenv(find_dotenv())
 
-cache = TTLCache(maxsize=10, ttl=float('inf'))
-chart_cache = TTLCache(maxsize=10, ttl=float('inf'))
-task_last_called = {}
+cache = TTLCache(maxsize=10, ttl=1680)
+chart_cache = TTLCache(maxsize=10, ttl=1799)
 
-# Background Scheduler setup
-scheduler = BackgroundScheduler()
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    if not scheduler.running:
-        scheduler.start()
-        scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task", replace_existing=True)
-    logger.info("Scheduler started!")
-    try:
-        yield
-    finally:
-        logger.info("Shutting down scheduler...")
-        scheduler.shutdown()
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 @app.get("/")
 async def root():
@@ -82,8 +63,6 @@ async def get_traffic_chart(
         # Get or generate data
         if traffic_results_key not in cache and profile_name_key not in cache:
             generate_new_data(username, traffic_results_key, profile_name_key)
-            scheduler.add_job(generate_new_data, 'interval', minutes=26, id=username,
-                      args=[username, traffic_results_key, profile_name_key], replace_existing=True)
 
         if chart_cache_key not in chart_cache:
             traffic_results = cache[traffic_results_key]
@@ -107,10 +86,9 @@ async def get_traffic_chart(
             
             # Generate chart
             chart_cache[chart_cache_key] = generate_chart(**chart_params)
-            scheduler.add_job(generate_chart, 'interval', minutes=28, id=chart_cache_key, kwargs=chart_params, replace_existing=True)
+
         
         chart_svg = chart_cache[chart_cache_key]
-        task_last_called[chart_cache_key] = datetime.now()
 
         # Set headers
         headers = {
@@ -130,23 +108,6 @@ async def get_traffic_chart(
     except Exception as e:
         logger.error(f"Unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
-
-def check_and_remove_task():
-    # Check all chart cache keys for expired tasks
-    now = datetime.now()
-    
-    for chart_cache_key, last_called in task_last_called.items():
-        # If the task has not been accessed for more than 2 days
-        if now - last_called > timedelta(days=2):
-            # Remove the job associated with the chart cache key
-            scheduler.remove_job(chart_cache_key)
-            
-            # Delete the entry from task_last_called
-            del task_last_called[chart_cache_key]
-            
-            # Also remove the chart from the cache if it exists
-            if chart_cache_key in chart_cache:
-                del chart_cache[chart_cache_key]
 
 # Function to generate new data
 def generate_new_data(username, traffic_results_key, profile_name_key):
