@@ -19,8 +19,9 @@ scheduler = BackgroundScheduler()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    scheduler.start()
-    scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task", replace_existing=True)
+    if not scheduler.running:
+        scheduler.start()
+        scheduler.add_job(check_and_remove_task, 'interval', days=3, id=f"check_task", replace_existing=True)
     # print("Scheduler started.")
     try:
         yield
