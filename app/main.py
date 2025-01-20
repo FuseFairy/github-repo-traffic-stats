@@ -8,8 +8,8 @@ from app.utils.logger import logger
 
 load_dotenv(find_dotenv())
 
-cache = TTLCache(maxsize=10, ttl=1680)
-chart_cache = TTLCache(maxsize=10, ttl=1799)
+cache = TTLCache(maxsize=10, ttl=1800)
+chart_cache = TTLCache(maxsize=10, ttl=1800)
 
 app = FastAPI()
 
