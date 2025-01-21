@@ -1,23 +1,21 @@
 import logging
 import sys
-from datetime import datetime
-import time
-
-class LocalTimeFormatter(logging.Formatter):
-    """Custom formatter to display server local time."""
-    def formatTime(self, record, datefmt=None):
-        local_time = time.localtime(record.created)
-        if datefmt:
-            return time.strftime(datefmt, local_time)
-        return time.strftime('%Y-%m-%d %H:%M:%S', local_time)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(logging.INFO)
+if not logger.hasHandlers():
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
 
-formatter = LocalTimeFormatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
+    file_handler = logging.FileHandler("app.log")
+    file_handler.setLevel(logging.DEBUG)
 
-logger.addHandler(console_handler)
+    formatter = logging.Formatter(
+        "[%(asctime)s] [%(levelname)s] [%(name)s] - %(message)s"
+    )
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
