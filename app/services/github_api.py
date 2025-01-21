@@ -36,7 +36,7 @@ async def get_all_traffic_data(username: str):
 # Fetch all repositories of a user
 async def get_user_repos(username: str):
     """
-    Retrieves all repository names for a specified GitHub user.
+    Retrieves all public repository names for a specified GitHub user.
 
     Args:
         username: The GitHub username whose repositories are to be fetched.
@@ -56,7 +56,7 @@ async def get_user_repos(username: str):
         raise HTTPException(status_code=response.status_code, detail=response.text)
     
     repos = response.json()
-    list_repos = [repo["name"] for repo in repos]
+    list_repos = [repo["name"] for repo in repos if repo["private"] == False]
 
     return list_repos
 
