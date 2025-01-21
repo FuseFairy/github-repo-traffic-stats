@@ -9,7 +9,7 @@ import asyncio
 
 load_dotenv(find_dotenv())
 
-data_cache = TTLCache(maxsize=1, ttl=1800)
+data_cache = TTLCache(maxsize=2, ttl=1800)
 chart_cache = TTLCache(maxsize=10, ttl=1800)
 data_lock = asyncio.Lock()
 
@@ -117,8 +117,11 @@ async def get_traffic_chart(
 # Function to generate new data
 async def generate_new_data(username, traffic_results_key, profile_name_key):
     logger.info("Generating new data...")
-    traffic_results = await get_all_traffic_data(username)
-    profile_name = await get_profile_name()
+    
+    traffic_results, profile_name = await asyncio.gather(
+        get_all_traffic_data(username),
+        get_profile_name()
+    )
     
     # Update cache
     data_cache[traffic_results_key] = traffic_results
