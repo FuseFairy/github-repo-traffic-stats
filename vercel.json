@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "devCommand": "uvicorn app.main:app",
   "builds": [
     {
       "src": "app/main.py",

@@ -10,7 +10,6 @@ python-dotenv = "*"
 cachetools = "*"
 svgpathtools = "*"
 svgwrite = "*"
-uvicorn = "*"
 
 [dev-packages]
 
