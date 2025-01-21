@@ -5,11 +5,11 @@ name = "pypi"
 
 [packages]
 fastapi = "*"
-requests = "*"
 python-dotenv = "*"
 cachetools = "*"
 svgpathtools = "*"
 svgwrite = "*"
+httpx = {extras = ["http2"], version = "*"}
 
 [dev-packages]
 

@@ -1,7 +1,7 @@
 import asyncio
 import os
 from fastapi import HTTPException
-import requests
+import httpx
 
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BASE_URL = "https://api.github.com"
@@ -48,7 +48,9 @@ async def get_user_repos(username: str):
         HTTPException: If any error occurs while fetching the repositories.
     """
     url = f"{BASE_URL}/users/{username}/repos"
-    response = requests.get(url, headers=HEADERS)
+    
+    async with httpx.AsyncClient(http2=True) as client:
+        response = await client.get(url, headers=HEADERS)
     
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.text)
@@ -77,24 +79,25 @@ async def get_repo_traffic(repo_owner, repo_name):
     views_url = f"{BASE_URL}/repos/{repo_owner}/{repo_name}/traffic/views"
 
     try:
-        clones_response = requests.get(clones_url, headers=HEADERS)
-        views_response = requests.get(views_url, headers=HEADERS)
+        async with httpx.AsyncClient(http2=True) as client:
+            clones_response = await client.get(clones_url, headers=HEADERS)
+            views_response = await client.get(views_url, headers=HEADERS)
 
-        clones_response.raise_for_status()
-        views_response.raise_for_status()
+            clones_response.raise_for_status()
+            views_response.raise_for_status()
 
-    except requests.exceptions.HTTPError as http_err:
+    except httpx.HTTPStatusError as http_err:
         status_code = http_err.response.status_code
         raise HTTPException(
             status_code=status_code,
             detail=f"HTTP error while fetching traffic data: {http_err.response.text}"
         )
-    except requests.exceptions.RequestException as e:
+    except httpx.RequestError as e:
         raise HTTPException(
             status_code=502,
             detail=f"Network error while fetching traffic data: {str(e)}"
         )
-    
+
     clones_data = clones_response.json()
     views_data = views_response.json()
 
@@ -115,11 +118,18 @@ async def get_profile_name():
         HTTPException: If any error occurs while fetching the profile name.
     """
     url = f"{BASE_URL}/user"
-    response = requests.get(url, headers=HEADERS)
     
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
+    try:
+        async with httpx.AsyncClient(http2=True) as client:
+            response = await client.get(url, headers=HEADERS)
+        
+        response.raise_for_status()
+        
+        response_json = response.json()
+        
+        return response_json["name"]
     
-    response_json = response.json()
-
-    return response_json["name"]
+    except httpx.HTTPStatusError as http_err:
+        raise HTTPException(status_code=http_err.response.status_code, detail=http_err.response.text)
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=502, detail=f"Network error while fetching profile name: {str(e)}")

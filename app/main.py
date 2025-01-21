@@ -1,3 +1,4 @@
+import traceback
 from fastapi import FastAPI, Query, Response, HTTPException
 from fastapi.responses import RedirectResponse
 from cachetools import TTLCache
@@ -109,7 +110,10 @@ async def get_traffic_chart(
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred: {str(e)}\nStack trace: {traceback.format_exc()}"
+        )
 
 # Function to generate new data
 async def generate_new_data(username, traffic_results_key, profile_name_key):
