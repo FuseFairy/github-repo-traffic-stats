@@ -74,6 +74,7 @@ Here’s an example of a traffic chart generated from a public GitHub repository
   ### 3. Install Dependencies
   ```
   pip install -r requirements.txt
+  pip install uvicorn
   ```
 
   ### 4. Set Up Environment Variables
