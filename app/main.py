@@ -4,12 +4,13 @@ from cachetools import TTLCache
 from app.services.github_api import get_all_traffic_data, get_profile_name
 from app.services.chart_generator import generate_chart
 from dotenv import load_dotenv, find_dotenv
-from app.utils.logger import logger
+import asyncio
 
 load_dotenv(find_dotenv())
 
-cache = TTLCache(maxsize=10, ttl=1800)
+data_cache = TTLCache(maxsize=2, ttl=1800)
 chart_cache = TTLCache(maxsize=10, ttl=1800)
+data_lock = asyncio.Lock()
 
 app = FastAPI()
 
@@ -61,12 +62,15 @@ async def get_traffic_chart(
         profile_name_key = f"profile_name_{username}"
 
         # Get or generate data
-        if traffic_results_key not in cache and profile_name_key not in cache:
-            generate_new_data(username, traffic_results_key, profile_name_key)
+        if traffic_results_key not in data_cache and profile_name_key not in data_cache:
+            async with data_lock:
+                # chack again to avoid race condition
+                if traffic_results_key not in data_cache and profile_name_key not in data_cache:
+                    await generate_new_data(username, traffic_results_key, profile_name_key)
 
         if chart_cache_key not in chart_cache:
-            traffic_results = cache[traffic_results_key]
-            profile_name = cache[profile_name_key]
+            traffic_results = data_cache[traffic_results_key]
+            profile_name = data_cache[profile_name_key]
 
             chart_params = {
                 "profile_name": profile_name,
@@ -93,7 +97,7 @@ async def get_traffic_chart(
         # Set headers
         headers = {
             "Content-Type": "image/svg+xml; charset=utf-8",
-            "Cache-Control": "public, max-age=1800, stale-while-revalidate=86400"
+            "Cache-Control": "public, max-age=0, s-maxage=1800, stale-while-revalidate=86400"
         }
 
         return Response(
@@ -103,18 +107,19 @@ async def get_traffic_chart(
         )
 
     except FileNotFoundError as e:
-        logger.error(f"File not found: {e}")
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
-        logger.error(f"Unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Function to generate new data
-def generate_new_data(username, traffic_results_key, profile_name_key):
-    logger.info("Generating new data...")
-    traffic_results = get_all_traffic_data(username)
-    profile_name = get_profile_name()
+async def generate_new_data(username, traffic_results_key, profile_name_key):
+    print("Generating new data...")
+
+    traffic_results, profile_name = await asyncio.gather(
+        get_all_traffic_data(username),
+        get_profile_name()
+    )
     
     # Update cache
-    cache[traffic_results_key] = traffic_results
-    cache[profile_name_key] = profile_name
+    data_cache[traffic_results_key] = traffic_results
+    data_cache[profile_name_key] = profile_name

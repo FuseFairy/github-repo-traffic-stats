@@ -1,3 +1,4 @@
+import asyncio
 import os
 from fastapi import HTTPException
 import requests
@@ -11,7 +12,7 @@ HEADERS = {
 }
 
 # Fetch all traffic data for a user's repositories
-def get_all_traffic_data(username: str):
+async def get_all_traffic_data(username: str):
     """
     Retrieves traffic data (clones and views) for all repositories of a GitHub user.
 
@@ -24,14 +25,16 @@ def get_all_traffic_data(username: str):
     Raises:
         HTTPException: If any error occurs while fetching the data.
     """
-    repos = get_user_repos(username)  # Get the list of repositories for the user
+    repos = await get_user_repos(username)  # Get the list of repositories for the user
 
-    traffic_results = [{repo_name: get_repo_traffic(username, repo_name)} for repo_name in repos]
+    tasks = [get_repo_traffic(username, repo_name) for repo_name in repos]
+    results = await asyncio.gather(*tasks)
+    traffic_results = [{repo_name: result} for repo_name, result in zip(repos, results)]
 
     return traffic_results
 
 # Fetch all repositories of a user
-def get_user_repos(username: str):
+async def get_user_repos(username: str):
     """
     Retrieves all repository names for a specified GitHub user.
 
@@ -56,7 +59,7 @@ def get_user_repos(username: str):
     return list_repos
 
 # Fetch traffic data for a specific repository
-def get_repo_traffic(repo_owner, repo_name):
+async def get_repo_traffic(repo_owner, repo_name):
     """
     Retrieves traffic data (clones and views) for a specific repository.
 
@@ -101,7 +104,7 @@ def get_repo_traffic(repo_owner, repo_name):
     }
 
 # Fetch the profile name of the authenticated GitHub user
-def get_profile_name():
+async def get_profile_name():
     """
     Retrieves the name of the authenticated GitHub user.
 

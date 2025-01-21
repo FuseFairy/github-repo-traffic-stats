@@ -4,7 +4,6 @@ import json
 from typing import Dict
 import svgwrite
 from svgpathtools import parse_path
-from app.utils.logger import logger
 
 # Load the theme from a JSON file.
 # If the theme file does not exist, raises a FileNotFoundError.
@@ -101,7 +100,7 @@ def generate_chart(profile_name: str, traffic_results: dict, theme: str, height:
     Returns:
         A svg string representing the generated chart.
     """
-    logger.info(f"Generating chart for profile '{profile_name}' with theme '{theme}'")
+    print(f"Generating chart for profile '{profile_name}' with theme '{theme}'")
     # Handling of excluded repos
     if exclude_repos:
         exclude_repos_list = exclude_repos.split(",") if "," in exclude_repos else [exclude_repos]
