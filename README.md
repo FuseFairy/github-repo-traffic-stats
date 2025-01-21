@@ -1,7 +1,7 @@
 
 [![github-profile-repo-analytics][socialify-image]][github-profile-repo-analytics--url]
 
-This project provides an API for fetching and visualizing traffic data of **your GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
+This project provides an API for fetching and visualizing traffic data of **your public GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
 
 > [!NOTE]  
 > Due to GitHub API limitations, you can only retrieve traffic data (such as views and clones) for the GitHub repositories you own through your own self-hosted API.
@@ -10,7 +10,7 @@ This project provides an API for fetching and visualizing traffic data of **your
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
 - 🎨Support for different themes and background colors
-- 🔃Data is automatically refreshed every 30 minutes
+- 🔃Data is automatically refreshed every 1 hour
 
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
