@@ -15,7 +15,7 @@ This project provides an API for fetching and visualizing traffic data of **your
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
 ```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?username=FuseFairy&theme=tokyo-night&bg_color=00000000)
+![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?theme=tokyo-night&bg_color=00000000)
 ```
 ![Sample Chart](https://raw.githubusercontent.com/gist/FuseFairy/c7f619079a91afedbf4e949977fa2df4/raw/e868d3bc96ce8755d7f8beb1130e5d7579c9e2c0/demo-traffic.svg)
 
@@ -133,25 +133,21 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 **Usage Examples**
 
 Here are some example API calls to demonstrate usage:
-- Basic Request
-  ```
-  /api?username=fusefairy
-  ```
 - Custom Chart Theme and Background
   ```
-  /api?username=fusefairy&theme=tokyo-night&bg_color=00000000
+  /api?theme=tokyo-night&bg_color=00000000
   ```
 - Modify the Stroke Color Directly
   ```
-  /api?username=fusefairy&clones_color=8ab0c6&views_color=c6c6c6
+  /api?clones_color=8ab0c6&views_color=c6c6c6
   ```
 - Exclude Specific Repositories
   ```
-  /api?username=fusefairy&exclude_repos=temp,example-repo
+  /api?exclude_repos=temp,example-repo
   ```
 - Custom Chart Size
   ```
-  /api?username=fusefairy&height=600&width=1000
+  /api?height=600&width=1000
   ```
 > [!TIP]
 > Use the interactive documentation at `/docs` to explore the API easily.
