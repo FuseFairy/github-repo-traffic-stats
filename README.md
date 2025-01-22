@@ -10,7 +10,7 @@ This project provides an API for fetching and visualizing traffic data of **your
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
 - 🎨Support for different themes and background colors
-- 🔃Data is automatically refreshed every 1 hour
+- 🔃Data is automatically refreshed every 2 hours
 
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
@@ -42,10 +42,12 @@ Here’s an example of a traffic chart generated from a public GitHub repository
   - Go to [Personal access tokens (classic) page](https://github.com/settings/tokens).
   - Create a **Personal access tokens (classic)** with **repo** and **user** permissions to access repository stats.
   
-  ### 5. Set the Personal Access Token in Vercel Environment Variables
+  ### 5. Set Vercel Environment Variables
   - Add a new environment variable when Configure Project:
     - **Name**: `GITHUB_TOKEN`
-    - **Value**: Your personal access token
+      - **Value**: Your personal access token
+    - **Name**: `GITHUB_USERNAME`
+      - **Value**: Your github username
   
   ### 6. Deploy the Project
   - Click **Deploy** in Vercel and wait for the deployment process to finish.
@@ -81,6 +83,7 @@ Here’s an example of a traffic chart generated from a public GitHub repository
   Create a `.env` file in the project directory and add your **GitHub Personal Access Token**
   ```
   GITHUB_TOKEN=<your_personal_access_token>
+  GITHUB_USERNAME=<your_github_username>
   ```
 
   ### 5. Run the Application
@@ -115,7 +118,6 @@ The GitHub Repo Traffic Stats API allows users to customize their queries with t
 **Parameters**
 | Parameter       | Type     | Description                                                                                                | Default Value  | Required |
 |-----------------|----------|------------------------------------------------------------------------------------------------------------|----------------|----------|
-| `username`      | `string` | Your GitHub username.                                                                                      | None           | ✅      |
 | `theme`         | `string` | The theme for the chart. Available options: `default`, `tokyo-night`, etc.                                 | `default`      | ❌      |
 | `bg_color`      | `string` | Background color of the chart in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
 | `clones_color`      | `string` | Color of the clones stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
