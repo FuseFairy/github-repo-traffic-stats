@@ -194,6 +194,6 @@ Your contribution will help make this project even better! 🚀
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/FuseFairy/github-repo-traffic-stats/blob/main/LICENSE) file for details.
 
-[socialify-image]: https://socialify.git.ci/FuseFairy/github-profile-repo-analytics/image?description=1&font=Jost&language=1&logo=https%3A%2F%2Frawcdn.githack.com%2Fgist%2FFuseFairy%2Fc9b6fdf469860297382ffd90d032e4b0%2Fraw%2Fa265be628a9cc241e345fa8c4753912aceffb726%2Ffastapi.svg&pattern=Formal+Invitation&theme=Light
+[socialify-image]: https://raw.githubusercontent.com/gist/FuseFairy/c233e02ce0225b8db2a093bdb71a4de0/raw/f0c4137fa0dcc0d0997848613b6fbe61935f2e00/github-profile-repo-analytics.svg
 
 [github-profile-repo-analytics--url]: https://github.com/FuseFairy/github-profile-repo-analytics
