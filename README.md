@@ -20,6 +20,7 @@ Here’s an example of a traffic chart generated from a public GitHub repository
 ![Sample Chart](https://raw.githubusercontent.com/gist/FuseFairy/c7f619079a91afedbf4e949977fa2df4/raw/e868d3bc96ce8755d7f8beb1130e5d7579c9e2c0/demo-traffic.svg)
 
 ## 🚀How to Deploy Your Own Instance on Vercel
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFuseFairy%2Fgithub-profile-repo-analytics&env=GITHUB_TOKE,GITHUB_USERNAME)
 <details>
   <summary><strong>Click to expand deployment instructions</strong></summary>
 
@@ -95,9 +96,9 @@ Here’s an example of a traffic chart generated from a public GitHub repository
   
   If you've modified the `--host` or `--port` parameters in the command, the server will run on the specified address and port. Adjust your browser or API client accordingly. For example:
   ```
-  uvicorn app.main:app --host 0.0.0.0 --port 9000
+  uvicorn app.main:app --host 0.0.0.0 --port 8001
   ```
-  The application would then be accessible at `http://<your-ip>:9000`.
+  The application would then be accessible at `http://<your-ip>:8001`.
   
   ### 6. Test the API
   Open your browser or an API client like Postman to test the API.
