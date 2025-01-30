@@ -12,9 +12,9 @@ This project automates the process of fetching and visualizing traffic data for 
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
 ```html
-<div align="center">
+<p align="center">
   <img src="https://raw.githubusercontent.com/FuseFairy/github-profile-repo-analytics/output/generated/traffic_chart.svg" alt="Repos traffic stats" />
-</div>
+</p>
 ```
 ![Sample Chart](https://raw.githubusercontent.com/gist/FuseFairy/c7f619079a91afedbf4e949977fa2df4/raw/e868d3bc96ce8755d7f8beb1130e5d7579c9e2c0/demo-traffic.svg)
 
