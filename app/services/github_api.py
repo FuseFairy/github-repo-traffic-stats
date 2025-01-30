@@ -1,6 +1,5 @@
 import asyncio
 import os
-from fastapi import HTTPException
 import httpx
 
 GITHUB_TOKEN = os.getenv("TOKEN")
@@ -57,7 +56,7 @@ async def get_user_repos(username: str):
         A list of repository names owned by the user.
 
     Raises:
-        HTTPException: If any error occurs while fetching the repositories.
+        dict: A dictionary containing error message if any error occurs while fetching the repositories.
     """
     url = f"{BASE_URL}/users/{username}/repos"
     repos = []
@@ -65,28 +64,34 @@ async def get_user_repos(username: str):
 
     async with httpx.AsyncClient(http2=True) as client:
         while True:
-            response = await client.get(
-                url,
-                headers=HEADERS,
-                params={"page": page, "per_page": 100, "type": "public"}
-            )
-
-            if response.status_code != 200:
-                raise HTTPException(
-                    status_code=response.status_code,
-                    detail=f"Failed to fetch repos: {response.text}"
+            try:
+                response = await client.get(
+                    url,
+                    headers=HEADERS,
+                    params={"page": page, "per_page": 100, "type": "public"}
                 )
+                response.raise_for_status()  # Raises HTTPStatusError for 4xx/5xx responses
 
-            current_repos = response.json()
-            if not current_repos:
-                break
+                current_repos = response.json()
+                if not current_repos:
+                    break
 
-            repos.extend([repo["name"] for repo in current_repos])
+                repos.extend([repo["name"] for repo in current_repos])
 
-            if "next" not in response.links:
-                break
+                if "next" not in response.links:
+                    break
 
-            page += 1
+                page += 1
+
+            except httpx.HTTPStatusError as http_err:
+                print(f"HTTP error occurred: {http_err}")
+                return {"error": f"HTTP error: {http_err.response.status_code} - {http_err.response.text}"}
+            except httpx.RequestError as e:
+                print(f"Network error occurred: {e}")
+                return {"error": f"Network error: {str(e)}"}
+            except Exception as e:
+                print(f"An unexpected error occurred: {e}")
+                return {"error": f"Unexpected error: {str(e)}"}
 
     return repos
 
@@ -156,6 +161,13 @@ async def get_profile_name():
         return response_json["name"]
     
     except httpx.HTTPStatusError as http_err:
-        raise HTTPException(status_code=http_err.response.status_code, detail=http_err.response.text)
+        print(f"HTTP error occurred: {http_err}")
+        return {"error": f"HTTP error: {http_err.response.status_code} - {http_err.response.text}"}
+
     except httpx.RequestError as e:
-        raise HTTPException(status_code=502, detail=f"Network error while fetching profile name: {str(e)}")
+        print(f"Network error occurred: {e}")
+        return {"error": f"Network error: {str(e)}"}
+
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return {"error": f"Unexpected error: {str(e)}"}
