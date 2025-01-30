@@ -35,11 +35,10 @@ async def main():
         print("Generating chart...")
         chart_svg = generate_chart(**chart_params)
 
-        output_path = os.path.join("generated", "traffic_chart.svg")
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        with open(output_path, "w", encoding="utf-8") as f:
+        os.makedirs("generated", exist_ok=True)
+        with open("generated/traffic_chart.svg", "w", encoding="utf-8") as f:
             f.write(chart_svg)
-        print(f"SVG saved to {output_path}")
+        print(f"SVG saved finished!")
 
     except Exception as e:
         print(f"An error occurred: {e}")
