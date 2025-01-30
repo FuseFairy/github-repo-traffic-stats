@@ -102,16 +102,12 @@ def generate_chart(profile_name: str, traffic_results: dict, theme: str, height:
     """
     print(f"Generating chart for profile '{profile_name}' with theme '{theme}'")
     # Handling of excluded repos
-    if exclude_repos:
-        exclude_repos_list = exclude_repos.split(",") if "," in exclude_repos else [exclude_repos]
-    else:
-        exclude_repos_list = []
     
     # Handling Traffic Data
     traffic_data = {}
     for traffic in traffic_results:
         repo_name = list(traffic.keys())[0]
-        if repo_name not in exclude_repos_list:
+        if repo_name not in exclude_repos:
             traffic_values = list(traffic.values())[0]
             
             # Handling clones data
@@ -143,11 +139,11 @@ def generate_chart(profile_name: str, traffic_results: dict, theme: str, height:
     plot_height = height - margin['top'] - margin['bottom']
 
     # color setting
-    clones_color = theme["line_colors"]["clones"] if clones_color is None else f'#{clones_color}'
-    views_color = theme["line_colors"]["views"] if views_color is None else f'#{views_color}'
-    clones_point_color = theme["point_colors"]["clones"] if clones_point_color is None else f'#{clones_point_color}'
-    views_point_color = theme["point_colors"]["views"] if views_point_color is None else f'#{views_point_color}'
-    background_color = f"#{bg_color}" if bg_color else theme["background_color"]
+    clones_color = clones_color if clones_color else theme["line_colors"]["clones"]
+    views_color = views_color if views_color else theme["line_colors"]["views"]
+    clones_point_color = clones_point_color if clones_point_color else theme["point_colors"]["clones"]
+    views_point_color = views_point_color if views_point_color else theme["point_colors"]["views"]
+    background_color = bg_color if bg_color else theme["background_color"]
     text_color = theme["text_color"]
     grid_color = theme["grid_color"]
 

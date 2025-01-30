@@ -1,11 +1,13 @@
-theme: "tokyo-night"
-height: 400
-width: 800
-radius: 20
-ticks: 5
-bg_color: "00000000"
-clones_color: null
-views_color: null
-clones_point_color: null
-views_point_color: null
-exclude_repos: null
+theme: "tokyo-night"  # The theme used for the chart. Available themes are defined in the "src/themes" folder.
+height: 400  # The height of the chart in pixels.
+width: 800  # The width of the chart in pixels.
+radius: 20  # The corner radius for the chart's rectangular background.
+ticks: 5  # The number of y-axis ticks on the chart.
+
+bg_color: "#00000000"  # Background color of the chart in hex format. "#00000000" represents fully transparent black.
+clones_color: null  # Stroke color for the clones line. Set to a hex value (e.g., "#FF5733") or leave as `null` for default.
+views_color: null  # Stroke color for the views line. Set to a hex value (e.g., "#33FF57") or leave as `null` for default.
+clones_point_color: null  # Color for the clone data points on the chart. Set to a hex value or leave as `null` for default.
+views_point_color: null  # Color for the view data points on the chart. Set to a hex value or leave as `null` for default.
+
+exclude_repos: []  # A list of repository names to exclude from the chart. Set to `[]` to include all repositories.
