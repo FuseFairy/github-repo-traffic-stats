@@ -27,7 +27,7 @@ async def get_all_traffic_data(username: str):
     repos = await get_user_repos(username)
 
     async with httpx.AsyncClient(http2=True) as client:
-        semaphore = asyncio.Semaphore(5)
+        semaphore = asyncio.Semaphore(10)
 
         async def bounded_task(repo_name):
             async with semaphore:
@@ -84,14 +84,11 @@ async def get_user_repos(username: str):
                 page += 1
 
             except httpx.HTTPStatusError as http_err:
-                print(f"HTTP error occurred: {http_err}")
-                return {"error": f"HTTP error: {http_err.response.status_code} - {http_err.response.text}"}
+                raise Exception(f"HTTP error: {http_err.response.status_code} - {http_err.response.text}")
             except httpx.RequestError as e:
-                print(f"Network error occurred: {e}")
-                return {"error": f"Network error: {str(e)}"}
+                raise Exception(f"Network error: {str(e)}")
             except Exception as e:
-                print(f"An unexpected error occurred: {e}")
-                return {"error": f"Unexpected error: {str(e)}"}
+                raise Exception(f"Unexpected error: {str(e)}")
 
     return repos
 
@@ -108,7 +105,7 @@ async def get_repo_traffic(repo_owner, repo_name, client: httpx.AsyncClient):
         A dictionary containing clones and views data for the repository.
 
     Raises:
-        HTTPException: If any error occurs while fetching the traffic data.
+        Exception: If any error occurs while fetching the traffic data.
     """
     clones_url = f"{BASE_URL}/repos/{repo_owner}/{repo_name}/traffic/clones"
     views_url = f"{BASE_URL}/repos/{repo_owner}/{repo_name}/traffic/views"
@@ -122,18 +119,15 @@ async def get_repo_traffic(repo_owner, repo_name, client: httpx.AsyncClient):
         views_res.raise_for_status()
 
     except httpx.HTTPStatusError as e:
-        print(f"Error for {repo_name}: HTTP {e.response.status_code} - {e.response.text}")
-        return {"clones": [], "views": []}
+        raise Exception(f"Error for {repo_name}: HTTP {e.response.status_code} - {e.response.text}")
     except Exception as e:
-        print(f"Unexpected error for {repo_name}: {str(e)}")
-        return {"clones": [], "views": []}
+        raise Exception(f"Unexpected error for {repo_name}: {str(e)}")
 
     try:
         clones_data = clones_res.json().get("clones", [])
         views_data = views_res.json().get("views", [])
     except ValueError as e:
-        print(f"JSON decode error for {repo_name}: {str(e)}")
-        clones_data, views_data = [], []
+        raise Exception(f"JSON decode error for {repo_name}: {str(e)}")
 
     return {"clones": clones_data, "views": views_data}
 
@@ -157,17 +151,12 @@ async def get_profile_name():
         response.raise_for_status()
         
         response_json = response.json()
-        
-        return response_json["name"]
     
     except httpx.HTTPStatusError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        return {"error": f"HTTP error: {http_err.response.status_code} - {http_err.response.text}"}
-
+        raise Exception(f"HTTP error: {http_err.response.status_code} - {http_err.response.text}")
     except httpx.RequestError as e:
-        print(f"Network error occurred: {e}")
-        return {"error": f"Network error: {str(e)}"}
-
+        raise Exception(f"Network error: {str(e)}")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        return {"error": f"Unexpected error: {str(e)}"}
+        raise Exception(f"Unexpected error: {str(e)}")
+
+    return response_json["name"]

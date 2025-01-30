@@ -1,6 +1,0 @@
-requirements.txt
-.gitignore
-*.md
-LICENSE
-generate_svg.py
-config.yml

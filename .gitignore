@@ -1,9 +1,3 @@
 __pycache__/
+generated/
 .env
-.vercel
-vc
-vc.cmd
-vc.ps1
-vercel
-vercel.cmd
-vercel.ps1

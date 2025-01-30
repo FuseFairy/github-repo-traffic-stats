@@ -1,4 +1,0 @@
-svgpathtools==1.6.1
-svgwrite==1.4.3
-pyyaml==6.0.2
-httpx[http2]==0.28.1
