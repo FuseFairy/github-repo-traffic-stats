@@ -1,161 +1,70 @@
 
 [![github-profile-repo-analytics][socialify-image]][github-profile-repo-analytics--url]
 
-This project provides an API for fetching and visualizing traffic data of **your public GitHub repositories**, including metrics like views and clones. It allows users to generate traffic charts in SVG format for their own repositories, helping developers and maintainers monitor the activity of their projects.
-
-> [!NOTE]  
-> Due to GitHub API limitations, you can only retrieve traffic data (such as views and clones) for the GitHub repositories you own through your own self-hosted API.
+This project automates the process of fetching and visualizing traffic data for **your public GitHub repositories** using GitHub Actions. It periodically retrieves metrics like views and clones and generates traffic charts in SVG format. The generated charts can be easily embedded in your GitHub profile or repository to track project activity.
 
 ## ✨Features
 - 🌐Fetch traffic data from GitHub repositories
 - 📈Visualize traffic data with customizable charts
 - 🎨Support for different themes and background colors
-- 🔃Data is automatically refreshed every 2 hours
+- 🔃Data is automatically refreshed every day
 
 ## 🌟Demo
 Here’s an example of a traffic chart generated from a public GitHub repository:
-```
-![Sample Chart](https://github-profile-repo-analytics.vercel.app/api?theme=tokyo-night&bg_color=00000000)
+```html
+<div align="center">
+  <img src="https://raw.githubusercontent.com/FuseFairy/github-profile-repo-analytics/output/generated/traffic_chart.svg" alt="Repos traffic stats" />
+</div>
 ```
 ![Sample Chart](https://raw.githubusercontent.com/gist/FuseFairy/c7f619079a91afedbf4e949977fa2df4/raw/e868d3bc96ce8755d7f8beb1130e5d7579c9e2c0/demo-traffic.svg)
 
-## 🚀How to Deploy Your Own Instance on Vercel
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FFuseFairy%2Fgithub-profile-repo-analytics&env=GITHUB_TOKE,GITHUB_USERNAME)
+## 🚀How to Deploy Your Own Instance with GitHub Workflows
 <details>
   <summary><strong>Click to expand deployment instructions</strong></summary>
 
-  ### 1. Sign in to Vercel
-  - Visit [vercel.com](https://vercel.com).
-  - Click **Log in** and choose **Continue with GitHub**.
-  - Authorize Vercel to access your GitHub account if prompted.
+  ### 1. Create a Personal Access Token
+  - Go to [Personal access tokens (classic) page](https://github.com/settings/tokens).
+  - Create a **Personal access tokens (classic)** with **repo** and **user** permissions to access repository stats.
   
   ### 2. Fork the Repository
   - Go to the GitHub repository for this project.
   - Click **Fork** in the upper-right corner to create your own copy.
   
-  ### 3. Import the Project to Vercel
-  - Go to your Vercel dashboard.
-  - Click **New Project**, then choose **Continue with GitHub**.
-  - Find the forked repository and click **Import**.
-    - Alternatively, you can import a third-party repository by selecting **Import Third-Party Git Repository**.
+  ### 3. Set Up GitHub Secrets
+  - Go to your forked repository.
+  - Navigate to **Settings** > **Secrets and Variables** > **Actions** > **New repository secret**.
+  - Add the following secrets:
+    - **TOKEN**: Your personal access token that you created in Step 1.
+    - **USERNAME**: Your GitHub username.
   
-  ### 4. Create a Personal Access Token
-  - Go to [Personal access tokens (classic) page](https://github.com/settings/tokens).
-  - Create a **Personal access tokens (classic)** with **repo** and **user** permissions to access repository stats.
+  ### 4. Final
+  - Go to the **Actions Page** and press "Run Workflow" on the right side of the screen to generate images for the first time.
+  - Once complete, you can find the generated images in the  *generated folder* under the `output` branch.
   
-  ### 5. Set Vercel Environment Variables
-  - Add a new environment variable when Configure Project:
-    - **Name**: `GITHUB_TOKEN`
-      - **Value**: Your personal access token
-    - **Name**: `GITHUB_USERNAME`
-      - **Value**: Your github username
-  
-  ### 6. Deploy the Project
-  - Click **Deploy** in Vercel and wait for the deployment process to finish.
-  - Once complete, you can find your project’s domain under the **Domains** section in the Vercel dashboard.
-  
-  ### 7. Use the API
-  - The API is now live! You can start using it by accessing the provided domain to fetch and display traffic data for your GitHub repositories.
 </details>
 
-## 💻Setting Up Local Development
-<details> 
-  <summary><strong>Click to expand local development instructions</strong></summary>
+## 🛠 Configuration (config.yml)
+This file allows you to customize the appearance of the generated traffic chart. You can modify the theme, dimensions, colors, and exclude specific repositories.
+```yaml
+theme: "tokyo-night"  # The theme used for the chart. Available themes are defined in the "src/themes" folder.
+height: 400  # The height of the chart in pixels.
+width: 800  # The width of the chart in pixels.
+radius: 20  # The corner radius for the chart's rectangular background.
+ticks: 5  # The number of y-axis ticks on the chart.
 
-  **Python 3.12+** is required to run this project.
+bg_color: "#00000000"  # Background color of the chart in hex format. "#00000000" represents fully transparent black.
+clones_color: null  # Stroke color for the clones line. Set to a hex value (e.g., "#FF5733") or leave as `null` for default.
+views_color: null  # Stroke color for the views line. Set to a hex value (e.g., "#33FF57") or leave as `null` for default.
+clones_point_color: null  # Color for the clone data points on the chart. Set to a hex value or leave as `null` for default.
+views_point_color: null  # Color for the view data points on the chart. Set to a hex value or leave as `null` for default.
 
-  ### 1. Clone the Repository
-  ```
-  git clone https://github.com/FuseFairy/github-profile-repo-analytics.git
-  ```
+exclude_repos: ["repo_1", "repo_2"]  # A list of repository names to exclude from the chart. Set to `[]` to include all repositories.
+```
 
-  ### 2. Navigate to the Project Directory
-  ```
-  cd github-repo-traffic-stats
-  ```
-
-  ### 3. Install Dependencies
-  ```
-  pip install -r requirements.txt
-  pip install uvicorn
-  ```
-
-  ### 4. Set Up Environment Variables
-  Create a `.env` file in the project directory and add your **GitHub Personal Access Token**
-  ```
-  GITHUB_TOKEN=<your_personal_access_token>
-  GITHUB_USERNAME=<your_github_username>
-  ```
-
-  ### 5. Run the Application
-  Start the FastAPI server locally:
-  ```
-  uvicorn app.main:app --reload
-  ```
-  By default, the application will be available at `http://127.0.0.1:8000` (localhost on port 8000).
-  
-  If you've modified the `--host` or `--port` parameters in the command, the server will run on the specified address and port. Adjust your browser or API client accordingly. For example:
-  ```
-  uvicorn app.main:app --host 0.0.0.0 --port 8001
-  ```
-  The application would then be accessible at `http://<your-ip>:8001`.
-  
-  ### 6. Test the API
-  Open your browser or an API client like Postman to test the API.
-  - The API base URL will be the same as the one configured in your uvicorn command.
-  - Access the API documentation at `/docs` (e.g., `http://127.0.0.1:8000/docs`) to interact with the available endpoints.
-</details>
-
-## 📋API Parameters
-The GitHub Repo Traffic Stats API allows users to customize their queries with the following parameters:
-
-**Base URL**
-- The API endpoint is:
-  ```
-  /api
-  ```
-- Example: `https://your-vercel-deployment-url.vercel.app/api`
-
-**Parameters**
-| Parameter       | Type     | Description                                                                                                | Default Value  | Required |
-|-----------------|----------|------------------------------------------------------------------------------------------------------------|----------------|----------|
-| `theme`         | `string` | The theme for the chart. Available options: `default`, `tokyo-night`, etc.                                 | `default`      | ❌      |
-| `bg_color`      | `string` | Background color of the chart in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `clones_color`      | `string` | Color of the clones stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `views_color`      | `string` | Color of the views stroke in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `clones_point_color`      | `string` | Color of the clones point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `views_point_color`      | `string` | Color of the views point in hex format (e.g., `FFFFFF` for white, `00000000` for transparent black).  | None           | ❌      |
-| `radius`      | `integer` | Corner radius for the chart's rectangular background.  | `20`           | ❌      |
-| `height`        | `integer`| Height of the chart in pixels **(minimum: 400)**.                                                          | `400`          | ❌      |
-| `width`         | `integer`| Width of the chart in pixels **(minimum: 800)**.                                                           | `800`          | ❌      |
-| `exclude_repos` | `string` | A comma-separated list of repository names to exclude from the traffic data.                               | None           | ❌      |
-| `ticks` | `integer` | The desired number of evenly spaced markers on the y-axis to improve chart readability. The actual number may vary slightly based on data. **(minimum: 5)**                           | `5`          | ❌      |
-
-**Usage Examples**
-
-Here are some example API calls to demonstrate usage:
-- Custom Chart Theme and Background
-  ```
-  /api?theme=tokyo-night&bg_color=00000000
-  ```
-- Modify the Stroke Color Directly
-  ```
-  /api?clones_color=8ab0c6&views_color=c6c6c6
-  ```
-- Exclude Specific Repositories
-  ```
-  /api?exclude_repos=temp,example-repo
-  ```
-- Custom Chart Size
-  ```
-  /api?height=600&width=1000
-  ```
-> [!TIP]
-> Use the interactive documentation at `/docs` to explore the API easily.
 
 ## 🎨Available Themes
 
-Here are the currently available themes you can use for your traffic charts. The themes are stored in the `app/themes` directory. Feel free to contribute and add your own themes by submitting a pull request!
+Here are the currently available themes you can use for your traffic charts. The themes are stored in the `src/themes` directory. Feel free to contribute and add your own themes by submitting a pull request!
 
 
 | Theme | Preview | Theme | Preview  |
@@ -195,6 +104,6 @@ Your contribution will help make this project even better! 🚀
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/FuseFairy/github-repo-traffic-stats/blob/main/LICENSE) file for details.
 
-[socialify-image]: https://raw.githubusercontent.com/gist/FuseFairy/c233e02ce0225b8db2a093bdb71a4de0/raw/f0c4137fa0dcc0d0997848613b6fbe61935f2e00/github-profile-repo-analytics.svg
+[socialify-image]: https://raw.githubusercontent.com/gist/FuseFairy/c233e02ce0225b8db2a093bdb71a4de0/raw/5f816da3d6360fcd61074f485740a6bcff0b3acc/github-profile-repo-analytics.svg
 
 [github-profile-repo-analytics--url]: https://github.com/FuseFairy/github-profile-repo-analytics
