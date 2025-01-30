@@ -1,0 +1,11 @@
+theme: "default"
+height: 400
+width: 800
+radius: 20
+ticks: 5
+bg_color: null
+clones_color: null
+views_color: null
+clones_point_color: null
+views_point_color: null
+exclude_repos: null
