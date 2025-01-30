@@ -2,7 +2,7 @@ import asyncio
 import os
 import httpx
 
-GITHUB_TOKEN = os.getenv("TOKEN")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 BASE_URL = "https://api.github.com"
 HEADERS = {
     "Authorization": f"Bearer {GITHUB_TOKEN}",

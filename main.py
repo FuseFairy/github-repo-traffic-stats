@@ -4,7 +4,7 @@ import yaml
 from src.services.github_api import get_all_traffic_data, get_profile_name
 from src.services.chart_generator import generate_chart
 
-GITHUB_USERNAME = os.getenv("USERNAME")
+GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
 traffic_data_lock = asyncio.Lock()
 
 def load_config():
