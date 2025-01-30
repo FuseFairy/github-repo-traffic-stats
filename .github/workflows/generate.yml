@@ -10,9 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      GITHUB_USERNAME: ${{ secrets.USERNAME }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +32,12 @@ jobs:
           python3 -m pip install -r requirements.txt
 
       - name: Generate images
-        run: python3 main.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_USERNAME: ${{ secrets.USERNAME }}
+        run: |
+          python3 --version
+          python3 main.py
 
       - name: Commit and push generated SVG
         run: |
