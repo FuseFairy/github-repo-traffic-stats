@@ -25,13 +25,25 @@ async def get_all_traffic_data(username: str):
     Raises:
         HTTPException: If any error occurs while fetching the data.
     """
-    repos = await get_user_repos(username)  # Get the list of repositories for the user
+    repos = await get_user_repos(username)
 
-    tasks = [get_repo_traffic(username, repo_name) for repo_name in repos]
-    results = await asyncio.gather(*tasks)
-    traffic_results = [{repo_name: result} for repo_name, result in zip(repos, results)]
+    async with httpx.AsyncClient(http2=True) as client:
+        semaphore = asyncio.Semaphore(5)
 
-    return traffic_results
+        async def bounded_task(repo_name):
+            async with semaphore:
+                return await get_repo_traffic(username, repo_name, client)
+
+        tasks = [bounded_task(repo) for repo in repos]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    valid_results = [
+        {repo: result} 
+        for repo, result in zip(repos, results) 
+        if not isinstance(result, Exception)
+    ]
+
+    return valid_results
 
 # Fetch all repositories of a user
 async def get_user_repos(username: str):
@@ -48,20 +60,38 @@ async def get_user_repos(username: str):
         HTTPException: If any error occurs while fetching the repositories.
     """
     url = f"{BASE_URL}/users/{username}/repos"
-    
-    async with httpx.AsyncClient(http2=True) as client:
-        response = await client.get(url, headers=HEADERS)
-    
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
-    
-    repos = response.json()
-    list_repos = [repo["name"] for repo in repos if repo["private"] == False]
+    repos = []
+    page = 1
 
-    return list_repos
+    async with httpx.AsyncClient(http2=True) as client:
+        while True:
+            response = await client.get(
+                url,
+                headers=HEADERS,
+                params={"page": page, "per_page": 100, "type": "public"}
+            )
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=f"Failed to fetch repos: {response.text}"
+                )
+
+            current_repos = response.json()
+            if not current_repos:
+                break
+
+            repos.extend([repo["name"] for repo in current_repos])
+
+            if "next" not in response.links:
+                break
+
+            page += 1
+
+    return repos
 
 # Fetch traffic data for a specific repository
-async def get_repo_traffic(repo_owner, repo_name):
+async def get_repo_traffic(repo_owner, repo_name, client: httpx.AsyncClient):
     """
     Retrieves traffic data (clones and views) for a specific repository.
 
@@ -79,32 +109,28 @@ async def get_repo_traffic(repo_owner, repo_name):
     views_url = f"{BASE_URL}/repos/{repo_owner}/{repo_name}/traffic/views"
 
     try:
-        async with httpx.AsyncClient(http2=True) as client:
-            clones_response = await client.get(clones_url, headers=HEADERS)
-            views_response = await client.get(views_url, headers=HEADERS)
-
-            clones_response.raise_for_status()
-            views_response.raise_for_status()
-
-    except httpx.HTTPStatusError as http_err:
-        status_code = http_err.response.status_code
-        raise HTTPException(
-            status_code=status_code,
-            detail=f"HTTP error while fetching traffic data: {http_err.response.text}"
+        clones_res, views_res = await asyncio.gather(
+            client.get(clones_url, headers=HEADERS),
+            client.get(views_url, headers=HEADERS)
         )
-    except httpx.RequestError as e:
-        raise HTTPException(
-            status_code=502,
-            detail=f"Network error while fetching traffic data: {str(e)}"
-        )
+        clones_res.raise_for_status()
+        views_res.raise_for_status()
 
-    clones_data = clones_response.json()
-    views_data = views_response.json()
+    except httpx.HTTPStatusError as e:
+        print(f"Error for {repo_name}: HTTP {e.response.status_code} - {e.response.text}")
+        return {"clones": [], "views": []}
+    except Exception as e:
+        print(f"Unexpected error for {repo_name}: {str(e)}")
+        return {"clones": [], "views": []}
 
-    return {
-        "clones": clones_data.get("clones", []),
-        "views": views_data.get("views", []),
-    }
+    try:
+        clones_data = clones_res.json().get("clones", [])
+        views_data = views_res.json().get("views", [])
+    except ValueError as e:
+        print(f"JSON decode error for {repo_name}: {str(e)}")
+        clones_data, views_data = [], []
+
+    return {"clones": clones_data, "views": views_data}
 
 # Fetch the profile name of the authenticated GitHub user
 async def get_profile_name():
